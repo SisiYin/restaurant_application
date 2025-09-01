@@ -69,6 +69,7 @@ fun RecipeItem(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .clickable {
+                        recipesViewModel.fetchRecipeDetail(recipe.id)
                         navController.navigate("recipes/${recipe.id}")
                     }
             )

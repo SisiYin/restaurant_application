@@ -1,9 +1,17 @@
 package com.example.restaurantapplication.viewmodel
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 
 class UserViewModel:  ViewModel()  {
+
+    fun logout() {
+//        auth.signOut()
+//        _isLoggedIn.value = false //change login state
+//        _user.value = null   //empty profile user data
+//        Log.d("logout", "User logged out, isLoggedIn = ${_isLoggedIn.value}")
+    }
 //    fun setCredentialManager(manager: CredentialManager, context: Context) {
 //        credentialManager = manager
 //        appContext = context.applicationContext
