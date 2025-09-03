@@ -11,6 +11,7 @@ data class RecipesResponse(
 data class Recipe(
     var id: Int,
     var title: String,
+    var diets: List<String>,
     var image: String,
 
     )

@@ -133,15 +133,15 @@ fun HomeScreen(
         }
 
         item {
-            RecipeSection("Newest", recipes, navController, recipesViewModel)
+            RecipeSection("Newest", recipes.take(3), navController, recipesViewModel)
         }
 
         item {
-            RecipeSection("Popular", recipes.take(3), navController, recipesViewModel)
+            RecipeSection("Popular", recipes.shuffled().take(3), navController, recipesViewModel)
         }
 
         item {
-            RecipeSection("Recommended", recipes.take(3), navController, recipesViewModel)
+            RecipeSection("Recommended", recipes.shuffled().take(3), navController, recipesViewModel)
         }
     }
 }

@@ -46,7 +46,9 @@ fun RecipeItem(
 //        recipesViewModel.getRecipeRating(recipeId.toString())
 //    }
     Card(
-        modifier = Modifier.padding(bottom = 16.dp),
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .fillMaxWidth(),
     ) {
         Column(
             modifier = Modifier.padding(16.dp)

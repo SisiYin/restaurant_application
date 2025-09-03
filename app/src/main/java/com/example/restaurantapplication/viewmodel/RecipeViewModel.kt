@@ -36,7 +36,7 @@ class RecipesViewModel:  ViewModel()  {
                 allRecipes.clear()
                 allRecipes.addAll(
                     FakeRecipesData.recipes.filter {
-                        diet.isNullOrBlank() || it.title.contains(diet, ignoreCase = true)
+                        diet.isNullOrBlank() || it.diets.any { d -> d.equals(diet, ignoreCase = true) }
                     }
                 )
                 Log.d("RecipesViewModel", "Successfully load fake recipe list")
