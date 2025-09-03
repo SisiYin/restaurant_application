@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import com.example.restaurantapplication.ui.appbars.DetailBottomBar
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.UserViewModel
 import org.jsoup.Jsoup
@@ -52,7 +53,7 @@ fun RecipeDetailScreen(
     userViewModel: UserViewModel,
     modifier: Modifier = Modifier
 ) {
-
+    val userId = "123456"
     val recipeDetail = recipesViewModel.recipeDetail.value
     if (recipeDetail != null) {
         //var isFavorite by remember { mutableStateOf(false) }
@@ -180,6 +181,17 @@ fun RecipeDetailScreen(
 
 
             }
+            DetailBottomBar(
+                navController = navController,
+                userId = userId,
+                recipeId = recipeId,
+                title = recipeDetail?.title ?: "",
+                image = recipeDetail?.image ?: "",
+                userViewModel = userViewModel,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+            )
         }
     }
 }

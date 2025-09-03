@@ -74,4 +74,6 @@ class UserViewModel:  ViewModel()  {
 //            }
 //        }
 //    }
+
+    fun addToCart(userId:String, recipeId:String, title: String, image: String){}
 }

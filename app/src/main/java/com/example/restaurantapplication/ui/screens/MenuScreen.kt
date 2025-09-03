@@ -35,7 +35,7 @@ fun MenuScreen(
     recipesViewModel: RecipesViewModel,
     //userViewModel: UserViewModel
 ) {
-    val categories = listOf("Meat","Vegetarian","Seafood","Salad","Dessert","Drink")
+    val categories = listOf("Salad","Main Dish", "Sushi", "Dessert","Drink", "Set Menus")
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var searchWord by remember { mutableStateOf("") }
 

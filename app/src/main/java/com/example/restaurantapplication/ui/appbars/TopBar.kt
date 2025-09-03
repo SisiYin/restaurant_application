@@ -33,7 +33,7 @@ fun TopBar(
 //    val isLoggedIn by userViewModel.isLoggedIn.collectAsState()  // ✅ 监听 StateFlow
 //    val user = FirebaseAuth.getInstance().currentUser
 //    val userId = user?.uid
-    val userId = 123456
+    val userId = "123456"
     var showLogoutDialog by remember { mutableStateOf(false) } // 控制弹出对话框
     val context = LocalContext.current
 
