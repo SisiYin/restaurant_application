@@ -30,6 +30,16 @@ data class RecipeDetail(
     var extendedIngredients: List<Ingredient>,
 )
 
+enum class DietCategory { Salad, MainDish, Sushi, Dessert, Drink }
+
+data class SetMenu(            // 套餐定义
+    val id: String,            // "A" / "B"
+    val name: String,          // "A Set" / "B Set"
+    // 只有可选的类目给配额；沙拉/饮料固定，不在这里限制
+    val limits: Map<DietCategory, Int>,   // e.g. A: MainDish=4, Sushi=4, Dessert=3
+    val price: Int = 0
+)
+
 data class CartItem(
     val recipeId: String = "",
     val title: String = "",

@@ -80,24 +80,6 @@ fun MenuScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-//        FlowRow(
-//            modifier = Modifier.fillMaxWidth(),
-//            horizontalArrangement = Arrangement.SpaceEvenly,
-//        ) {
-//            categories.forEach { category ->
-//                FilterChip(
-//                    category = category,
-//                    selected = selectedCategory == category, // Check if the category is selected
-//                    onClick = {
-//                        selectedCategory = if (selectedCategory == category) null.toString() else category // Toggle category selection
-//                    }
-//                )
-//
-//                Spacer(modifier = Modifier.weight(1f))
-//            }
-//        }
-//        RecipeList(recipes=filteredRecipes,navController = navController,recipesViewModel=recipesViewModel)
-
         Row(modifier = Modifier.fillMaxSize()) {
             // 分类列表
             Column(
