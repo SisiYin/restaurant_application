@@ -152,11 +152,7 @@ fun SetMenusDetailScreen(
         // 底部说明 + 确认按钮
         item {
             Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                Text(
-                    "套餐包含 Salad 和 Drink（固定项），其余按配额自选。",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
-                )
+
                 Button(
                     onClick = onDone,
                     enabled = ui.isCompleted,
@@ -187,6 +183,11 @@ private fun HeaderBlockCompact(
         Spacer(Modifier.height(6.dp))
         Text(summary, style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray))
         Spacer(Modifier.height(8.dp))
+        Text(
+            "Salad and Drink are fixed; pick the others up to the quota.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray
+        )
         Text(
             text = "Main Dish ${mainDish.first}/${mainDish.second}  |  " +
                     "Sushi ${sushi.first}/${sushi.second}  |  " +
