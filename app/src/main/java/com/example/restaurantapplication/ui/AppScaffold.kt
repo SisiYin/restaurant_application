@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -19,20 +20,24 @@ import com.example.restaurantapplication.ui.screens.HomeScreen
 import com.example.restaurantapplication.ui.screens.InfoScreen
 import com.example.restaurantapplication.ui.screens.MenuScreen
 import com.example.restaurantapplication.ui.screens.RecipeDetailScreen
+import com.example.restaurantapplication.ui.screens.SetMenusDetailScreen
 import com.example.restaurantapplication.ui.screens.SettingsScreen
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.UserViewModel
+import com.example.restaurantapplication.viewmodel.SetMenusViewModel
 
 @Composable
 fun AppScaffold(
     userViewModel: UserViewModel,
-    recipesViewModel: RecipesViewModel
+    recipesViewModel: RecipesViewModel,
 ) {
     val navController = rememberNavController() // create NavController
     val backStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry.value?.destination?.route
     val snackbarHostState = remember { SnackbarHostState() } // create SnackbarHostState
     //val coroutineScope = rememberCoroutineScope()
+
+    val setMenusViewModel: SetMenusViewModel = viewModel()
 
 //    LaunchedEffect(Unit) {
 //        userViewModel.initUserIfLoggedIn()
@@ -50,6 +55,7 @@ fun AppScaffold(
                 "info" -> ScreenTopBar("Info",navController)
 //                "cart" -> ScreenTopBar("Cart",navController)
                 "recipes/{recipeId}" -> ScreenTopBar("Recipes",navController)
+                "setMenus/{id}" -> ScreenTopBar("Set Menu", navController)
 //                "checkout" -> ScreenTopBar("Confirm Orders",navController)
 //                "orders" -> ScreenTopBar("Orders",navController)
 //                //"Sign In/Sign Up" -> ScreenTopBar("Login",navController)
@@ -62,7 +68,8 @@ fun AppScaffold(
             when (currentRoute) {
                 "recipes/{recipeId}" -> {
                 }
-
+                "setMenus/{id}" -> {
+                }
                 else -> {
                     BottomBar(navController)
                 }
@@ -79,6 +86,7 @@ fun AppScaffold(
             ) {
                 composable(route = "home") { HomeScreen(navController, modifier, recipesViewModel) }
                 composable(route = "list") { MenuScreen(navController, modifier, recipesViewModel) }
+
 //                composable(route = "login") { LoginScreen(navController=navController,modifier=modifier,userViewModel=userViewModel) }
                 composable(route = "info") { InfoScreen(modifier) }
                 composable(route = "settings") { SettingsScreen(modifier) }
@@ -96,6 +104,17 @@ fun AppScaffold(
                         recipeId = recipeId,
                         recipesViewModel = recipesViewModel,
                         userViewModel = userViewModel
+                    )
+                }
+                composable("setMenus/{id}"){ backStack ->
+                    val id = backStack.arguments?.getString("id")!!
+                    SetMenusDetailScreen(
+                        navController = navController,
+                        modifier = modifier,
+                        setId = id,
+                        recipesViewModel = recipesViewModel,
+                        setMenusViewModel = setMenusViewModel,
+                        onDone = {  } // 或跳到结算页
                     )
                 }
 

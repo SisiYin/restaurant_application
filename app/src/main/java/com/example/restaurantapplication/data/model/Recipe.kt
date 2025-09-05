@@ -1,4 +1,4 @@
-package com.example.restaurantapplication.model
+package com.example.restaurantapplication.data.model
 
 //import com.google.firebase.Timestamp
 
@@ -30,14 +30,17 @@ data class RecipeDetail(
     var extendedIngredients: List<Ingredient>,
 )
 
-enum class DietCategory { Salad, MainDish, Sushi, Dessert, Drink }
+enum class DietCategory { MainDish, Sushi, Dessert }
 
 data class SetMenu(            // 套餐定义
     val id: String,            // "A" / "B"
     val name: String,          // "A Set" / "B Set"
     // 只有可选的类目给配额；沙拉/饮料固定，不在这里限制
     val limits: Map<DietCategory, Int>,   // e.g. A: MainDish=4, Sushi=4, Dessert=3
-    val price: Int = 0
+    val includedFixed: List<String> = listOf("Salad", "Drink"),
+    val summary: String,
+    val price: Int = 0,
+    val imageUrl: String
 )
 
 data class CartItem(

@@ -1,11 +1,11 @@
-package com.example.restaurantapplication.data
+package com.example.restaurantapplication.data.source
 
-import com.example.restaurantapplication.model.Ingredient
-import com.example.restaurantapplication.model.Recipe
-import com.example.restaurantapplication.model.RecipeDetail
+import com.example.restaurantapplication.data.model.Ingredient
+import com.example.restaurantapplication.data.model.Recipe
+import com.example.restaurantapplication.data.model.RecipeDetail
 
 
-object FakeRecipesData {
+object FakeRecipesDataSource {
     val recipes = listOf(
         Recipe(id = 1, title = "Stewed Chicken", diets = listOf("Main Dish","Meat"), image = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg"),
         Recipe(id = 2, title = "Stir-fried Beef", diets = listOf("Main Dish","Meat"), image = "https://www.themealdb.com/images/media/meals/1529444830.jpg"),
@@ -15,21 +15,24 @@ object FakeRecipesData {
         Recipe(id = 6, title = "Refreshing Lemon Drink", diets = listOf("Drink"), image = "https://picjumbo.com/wp-content/uploads/lemon-drink-free-photo-2210x1473.jpg") ,
         Recipe(id = 7, title = "Chocolate Lava Cake", diets = listOf("Dessert"), image = "https://www.themealdb.com/images/media/meals/tyywsw1505930373.jpg"),
         Recipe(id = 8, title = "Caesar Salad", diets = listOf("Salad"), image = "https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg"),
-        Recipe(id = 9, title = "Latte", diets = listOf("Drink"), image = "https://recipesnobs.com/wp-content/uploads/2016/05/coffee-latte.jpg"),
+        Recipe(id = 9, title = "Coffee", diets = listOf("Drink"), image = "https://recipesnobs.com/wp-content/uploads/2016/05/coffee-latte.jpg"),
+        Recipe(id = 11, title = "Tea", diets = listOf("Drink"), image = "https://i.pinimg.com/originals/b5/f6/f1/b5f6f103524c4ef74a277bd726371e4e.jpg"),
         Recipe(id = 10, title = "Strawberries Romanoff", diets = listOf("Dessert"), image = "https://www.themealdb.com/images/media/meals/oe8rg51699014028.jpg"),
+        Recipe(id = 12, title = "Garden Salad", diets = listOf("Salad", "Vegan"), image = "https://hellolittlehome.com/wp-content/uploads/2022/08/garden-salad-recipe-2.jpg"),
+        Recipe(id = 13, title = "Fruit Salad", diets = listOf("Salad", "Vegan"), image = "https://img.freepik.com/premium-photo/bowl-full-with-mixed-berries-fruits-salad_787273-4882.jpg"),
         Recipe(id = 101, title ="Salmon Nigiri", diets = listOf("Sushi"), image = "https://loremflickr.com/640/480/salmon,nigiri,sushi?lock=3101"),
         Recipe(id = 102, title ="Tuna Maki", diets = listOf("Sushi"), image = "https://loremflickr.com/640/480/tuna,maki,sushi?lock=3102"),
         Recipe(id = 103, title ="California Roll", diets = listOf("Sushi"), image = "https://loremflickr.com/640/480/california,roll,sushi?lock=3103"),
         Recipe(104, "Eel (Unagi) Roll", diets = listOf("Sushi"), image ="https://loremflickr.com/640/480/unagi,roll,sushi?lock=3104"),
         Recipe(105, "Shrimp Tempura Roll", diets = listOf("Sushi"), image ="https://loremflickr.com/640/480/shrimp,tempura,roll,sushi?lock=3105"),
-        Recipe(301, "Mapo Tofu", diets = listOf("Main Dish"), image ="https://loremflickr.com/640/480/mapo,tofu?lock=3301"),
-        Recipe(302, "Beef Noodle Soup", diets = listOf("Main Dish"), image ="https://loremflickr.com/640/480/beef,noodle,soup?lock=3302"),
-        Recipe(303, "Sweet & Sour Pork", diets = listOf("Main Dish"), image ="https://loremflickr.com/640/480/sweet,sour,pork?lock=3303"),
-        Recipe(304, "Kung Pao Chicken", diets = listOf("Main Dish","Meat"), image ="https://loremflickr.com/640/480/kungpao,chicken?lock=3304"),
-        Recipe(305, "Grilled Salmon", diets = listOf("Main Dish","Meat"), image ="https://loremflickr.com/640/480/grilled,salmon?lock=3305"),
-        Recipe(201, "Egg Tart", diets = listOf("Dessert"), image ="https://loremflickr.com/640/480/egg,tart?lock=3201"),
-        Recipe(202, "Sweet Dumplings", diets = listOf("Dessert"), image ="https://loremflickr.com/640/480/sweet,dumpling,dessert?lock=3202"),
-        Recipe(203, "Custard Bun", diets = listOf("Dessert"), image ="https://loremflickr.com/640/480/custard,bun?lock=3203"),
+        Recipe(301, "Mapo Tofu", diets = listOf("Main Dish"), image ="https://norecipes.com/wp-content/uploads/2018/02/mapo-tofu-recipe-011.jpg"),
+        Recipe(302, "Beef Noodle Soup", diets = listOf("Main Dish"), image ="https://poshjournal.com/wp-content/uploads/2021/05/taiwanese-beef-noodle-soup-recipe.jpg"),
+        Recipe(303, "Sweet & Sour Pork", diets = listOf("Main Dish"), image ="https://www.coolinarco.com/wp-content/uploads/2023/09/ds0887_Sweet_and_Sour_Pork_745ad2e8-115b-4306-9fb5-46ac3690c0a3.webp"),
+        Recipe(304, "Kung Pao Chicken", diets = listOf("Main Dish","Meat"), image ="https://www.cookingclassy.com/wp-content/uploads/2020/02/kung-pao-chicken-1-1024x1536.jpg"),
+        Recipe(305, "Grilled Salmon", diets = listOf("Main Dish","Meat"), image ="https://www.feastingathome.com/wp-content/uploads/2022/08/Grilled-Salmon-10.jpg"),
+        Recipe(201, "Glazed Donut", diets = listOf("Dessert"), image ="https://doughnutlounge.com/wp-content/uploads/glazed-donut-recipe.jpeg"),
+        Recipe(202, "Har Gow", diets = listOf("Dessert","Seafood"), image ="https://pic.nximg.cn/file/20190113/21251565_134420422084_2.jpg"),
+        Recipe(203, "Xiaolongbao", diets = listOf("Dessert"), image ="https://img.freepik.com/premium-photo/xiaolongbao-bamboo-tray_447653-9778.jpg"),
     )
 
     val recipeDetails = mapOf(
@@ -144,9 +147,9 @@ object FakeRecipesData {
         ),
         9 to RecipeDetail(
             id = 9,
-            title = "Latte",
+            title = "Coffee",
             image = "https://recipesnobs.com/wp-content/uploads/2016/05/coffee-latte.jpg",
-            summary = "Smooth and creamy coffee latte.",
+            summary = "Smooth and creamy coffee.",
             pricePerServing = 4.50f,
             diets = listOf("Drink"),
             extendedIngredients = emptyList()
@@ -162,6 +165,16 @@ object FakeRecipesData {
                 Ingredient("Strawberry"), Ingredient("Sugar"), Ingredient("Cream"), Ingredient("Sour Cream"), Ingredient("Grand Marnier")
             )
         ),
+        11 to RecipeDetail(
+            id = 9,
+            title = "Tea",
+            image = "https://i.pinimg.com/originals/b5/f6/f1/b5f6f103524c4ef74a277bd726371e4e.jpg",
+            summary = "Light and refreshing hot tea.",
+            pricePerServing = 4.50f,
+            diets = listOf("Drink"),
+            extendedIngredients = emptyList()
+        ),
+
         101 to RecipeDetail(
             id = 101,
             title = "Salmon Nigiri",
@@ -235,49 +248,52 @@ object FakeRecipesData {
         ),
         201 to RecipeDetail(
             id = 201,
-            title = "Egg Tart",
-            image = "https://loremflickr.com/640/480/egg,tart?lock=3201",
-            summary = "Crispy pastry tart filled with silky egg custard.",
-            pricePerServing = 4.20f,
+            title = "Glazed Donut",
+            image = "https://doughnutlounge.com/wp-content/uploads/glazed-donut-recipe.jpeg",
+            summary = "Classic ring doughnut with vanilla glaze.",
+            pricePerServing = 3.49f,
             diets = listOf("Dessert"),
             extendedIngredients = listOf(
-                Ingredient("Eggs"),
-                Ingredient("Sugar"),
-                Ingredient("Milk"),
-                Ingredient("Pastry Dough")
+                Ingredient("All-purpose Flour"),
+                Ingredient("Granulated Sugar"),
+                Ingredient("Whole Milk"),
+                Ingredient("Egg"),
+                Ingredient("Unsalted Butter"),
             )
         ),
         202 to RecipeDetail(
             id = 202,
-            title = "Sweet Dumplings",
-            image = "https://loremflickr.com/640/480/sweet,dumpling,dessert?lock=3202",
-            summary = "Glutinous rice dumplings filled with sweet sesame paste.",
+            title = "Har Gow",
+            image = "https://pic.nximg.cn/file/20190113/21251565_134420422084_2.jpg",
+            summary = "Cantonese shrimp dumplings with translucent wrappers.",
             pricePerServing = 5.00f,
             diets = listOf("Dessert"),
             extendedIngredients = listOf(
-                Ingredient("Glutinous Rice Flour"),
-                Ingredient("Black Sesame Paste"),
-                Ingredient("Sugar")
+                Ingredient("Shrimp"),
+                Ingredient("Bamboo Shoots"),
+                Ingredient("Ginger"),
+                Ingredient("Scallions"),
+                Ingredient("Sesame Oil"),
             )
         ),
         203 to RecipeDetail(
             id = 203,
-            title = "Custard Bun",
-            image = "https://loremflickr.com/640/480/custard,bun?lock=3203",
-            summary = "Steamed buns filled with creamy custard filling.",
+            title = "Xiaolongbao",
+            image = "https://img.freepik.com/premium-photo/xiaolongbao-bamboo-tray_447653-9778.jpg",
+            summary = "Shanghai-style soup dumplings with juicy pork filling.",
             pricePerServing = 4.80f,
             diets = listOf("Dessert"),
             extendedIngredients = listOf(
-                Ingredient("Flour"),
-                Ingredient("Eggs"),
-                Ingredient("Milk"),
-                Ingredient("Sugar")
+                Ingredient("Ground Pork"),
+                Ingredient("Ginger"),
+                Ingredient("Scallions"),
+                Ingredient("Light Soy Sauce")
             )
         ),
         301 to RecipeDetail(
             id = 301,
             title = "Mapo Tofu",
-            image = "https://loremflickr.com/640/480/mapo,tofu?lock=3301",
+            image = "https://norecipes.com/wp-content/uploads/2018/02/mapo-tofu-recipe-011.jpg",
             summary = "Spicy Sichuan-style tofu with minced pork and chili bean paste.",
             pricePerServing = 13.50f,
             diets = listOf("Main Dish"),
@@ -292,7 +308,7 @@ object FakeRecipesData {
         302 to RecipeDetail(
             id = 302,
             title = "Beef Noodle Soup",
-            image = "https://loremflickr.com/640/480/beef,noodle,soup?lock=3302",
+            image = "https://www.coolinarco.com/wp-content/uploads/2023/09/ds0887_Sweet_and_Sour_Pork_745ad2e8-115b-4306-9fb5-46ac3690c0a3.webp",
             summary = "Slow-cooked beef brisket served with noodles in savory broth.",
             pricePerServing = 14.80f,
             diets = listOf("Main Dish"),
@@ -320,7 +336,7 @@ object FakeRecipesData {
         304 to RecipeDetail(
             id = 304,
             title = "Kung Pao Chicken",
-            image = "https://loremflickr.com/640/480/kungpao,chicken?lock=3304",
+            image = "https://www.cookingclassy.com/wp-content/uploads/2020/02/kung-pao-chicken-1-1024x1536.jpg",
             summary = "Spicy stir-fried chicken with peanuts, chili, and vegetables.",
             pricePerServing = 13.20f,
             diets = listOf("Main Dish","Meat"),
@@ -335,7 +351,7 @@ object FakeRecipesData {
         305 to RecipeDetail(
             id = 305,
             title = "Grilled Salmon",
-            image = "https://loremflickr.com/640/480/grilled,salmon?lock=3305",
+            image = "https://www.feastingathome.com/wp-content/uploads/2022/08/Grilled-Salmon-10.jpg",
             summary = "Salmon fillet grilled with lemon and herbs.",
             pricePerServing = 18.50f,
             diets = listOf("Main Dish","Seafood"),

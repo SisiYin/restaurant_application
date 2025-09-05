@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.example.restaurantapplication.model.Recipe
+import com.example.restaurantapplication.data.model.Recipe
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 
 @Composable

@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.restaurantapplication.model.Recipe
-import com.example.restaurantapplication.model.RecipeDetail
+import com.example.restaurantapplication.data.model.Recipe
+import com.example.restaurantapplication.data.model.RecipeDetail
 import kotlinx.coroutines.launch
-import com.example.restaurantapplication.data.FakeRecipesData
+import com.example.restaurantapplication.data.source.FakeRecipesDataSource
 
 class RecipesViewModel:  ViewModel()  {
     var allRecipes = mutableStateListOf<Recipe>()
@@ -22,7 +22,7 @@ class RecipesViewModel:  ViewModel()  {
         viewModelScope.launch {
             try {
                 allRecipes.clear()
-                allRecipes.addAll(FakeRecipesData.recipes)
+                allRecipes.addAll(FakeRecipesDataSource.recipes)
                 Log.d("RecipesViewModel", "Successfully loaded fake recipes")
             } catch (e: Exception) {
                 Log.e("RecipesViewModel", "Failed to load fake recipes: ${e.message}")
@@ -35,7 +35,7 @@ class RecipesViewModel:  ViewModel()  {
             try {
                 allRecipes.clear()
                 allRecipes.addAll(
-                    FakeRecipesData.recipes.filter {
+                    FakeRecipesDataSource.recipes.filter {
                         diet.isNullOrBlank() || it.diets.any { d -> d.equals(diet, ignoreCase = true) }
                     }
                 )
@@ -48,7 +48,7 @@ class RecipesViewModel:  ViewModel()  {
     fun fetchRecipeDetail(recipeId: Int) {
         viewModelScope.launch {
             try {
-                recipeDetail.value = FakeRecipesData.recipeDetails[recipeId]
+                recipeDetail.value = FakeRecipesDataSource.recipeDetails[recipeId]
                 Log.d("RecipesViewModel", "Successfully loaded fake recipe detail")
             } catch (e: Exception) {
                 Log.d("ERROR", "Failed to loaded fake recipe details: ${e.message}")

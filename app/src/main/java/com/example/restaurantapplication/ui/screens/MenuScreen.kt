@@ -33,11 +33,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.restaurantapplication.ui.components.FilterChip
 import com.example.restaurantapplication.ui.components.RecipeItem
 import com.example.restaurantapplication.ui.components.RecipeList
+import com.example.restaurantapplication.ui.components.SetMenuCard
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
+import com.example.restaurantapplication.viewmodel.SetMenusViewModel
 
 
 @Composable
@@ -46,6 +49,7 @@ fun MenuScreen(
     modifier: Modifier = Modifier,
     recipesViewModel: RecipesViewModel,
     //userViewModel: UserViewModel
+    setMenusViewModel: SetMenusViewModel = viewModel()
 ) {
     val categories = listOf("Salad","Main Dish", "Sushi", "Dessert","Drink", "Set Menus")
     var selectedCategory by remember { mutableStateOf<String?>(null) }
@@ -81,7 +85,7 @@ fun MenuScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(modifier = Modifier.fillMaxSize()) {
-            // 分类列表
+            // 左侧分类列表
             Column(
                 modifier = Modifier
                     .width(90.dp)
@@ -110,18 +114,39 @@ fun MenuScreen(
                 }
             }
 
-            // 菜品列表
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(0.dp)
-            ) {
-                items(filteredRecipes) { recipe ->
-                    RecipeItem(recipe = recipe, navController = navController, recipesViewModel = recipesViewModel)
+
+            // 右侧菜品列表：当选中 "Set Menus" → 显示 A/B 套餐；否则显示菜品
+            if (selectedCategory == "Set Menus") {
+                // 套餐列表页
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(setMenusViewModel.sets, key = { it.id }) { set ->
+                        SetMenuCard(
+                            set = set,
+                            navController = navController,
+                            setMenusViewModel = setMenusViewModel,
+                        )
+                    }
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
+                ) {
+                    items(filteredRecipes) { recipe ->
+                        RecipeItem(recipe = recipe, navController = navController, recipesViewModel = recipesViewModel)
+                    }
                 }
             }
+
         }
     }
 }
