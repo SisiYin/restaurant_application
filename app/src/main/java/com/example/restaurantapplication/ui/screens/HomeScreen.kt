@@ -27,6 +27,8 @@ import com.example.restaurantapplication.ui.components.FilterChip
 import com.example.restaurantapplication.ui.components.RecipeSection
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import androidx.compose.foundation.lazy.LazyColumn
+import com.example.restaurantapplication.R
+import com.example.restaurantapplication.ui.components.LocalVideoPlayer
 
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -36,7 +38,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     recipesViewModel: RecipesViewModel,
 ){
-    val categories = listOf("Meat","Vegetarian","Seafood","Salad","Dessert","Drink")
+    val categories = listOf("About Us","Menus","Contact Us")
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var searchWord by remember { mutableStateOf("") }
 
@@ -46,49 +48,6 @@ fun HomeScreen(
 
     val recipes = recipesViewModel.allRecipes
     println("DEBUG: Recipes count = ${recipes.size}")
-
-
-    // Layout
-//    Column(modifier = modifier.padding(16.dp)) {
-//
-//        OutlinedTextField(
-//            value = searchWord,
-//            onValueChange = { searchWord = it },
-//            placeholder = { Text("Search Recipe") },
-//            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") },
-//            modifier = Modifier.fillMaxWidth()
-//        )
-//
-//        Spacer(modifier = Modifier.height(8.dp))
-//
-//        FlowRow(
-//            modifier = Modifier.fillMaxWidth(),
-//            horizontalArrangement = Arrangement.SpaceEvenly,
-//        ) {
-//            categories.forEach { category ->
-//                FilterChip(
-//                    category = category,
-//                    selected = selectedCategory == category, // Check if the category is selected
-//                    onClick = {
-//                        selectedCategory = if (selectedCategory == category) null.toString() else category // Toggle category selection
-//                    }
-//                )
-//            }
-//        }
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(200.dp)
-//        ) {
-//            Text("Restaurant Video Placeholder")
-//        }
-//
-//        Spacer(modifier = Modifier.height(16.dp))
-//
-//        RecipeSection("Newest", recipes, navController, recipesViewModel)
-//        RecipeSection("Popular", recipes, navController, recipesViewModel)
-//        RecipeSection("Recommended", recipes, navController, recipesViewModel)
-//    }
 
     LazyColumn(
         modifier = modifier.padding(16.dp),
@@ -123,13 +82,16 @@ fun HomeScreen(
         }
 
         item {
-            Box(
+            LocalVideoPlayer(
+                rawResId = R.raw.restaurant_intro,        // 你的文件名 restaurant.mp4
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-            ) {
-                Text("Restaurant Video Placeholder")
-            }
+                    .height(200.dp),                // 跟你原来保持一致
+                autoPlay = true,
+                loop = true,
+                mute = true,                        // 餐厅 App 常见静音循环
+                useController = false               // 不显示控制条
+            )
         }
 
         item {

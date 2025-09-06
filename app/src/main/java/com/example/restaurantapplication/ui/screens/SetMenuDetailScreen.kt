@@ -23,10 +23,6 @@ import androidx.navigation.NavController
 import com.example.restaurantapplication.data.model.DietCategory
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.SetMenusViewModel
-
-
-
-// ====== imports（按需保留） ======
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -41,10 +37,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
+import com.example.restaurantapplication.data.model.FixedItem
 import com.example.restaurantapplication.data.model.Recipe
+import com.example.restaurantapplication.ui.components.FixedCategoryRow
+import com.example.restaurantapplication.ui.components.RecipePickCard
 
 @Composable
 fun SetMenusDetailScreen(
@@ -59,6 +57,14 @@ fun SetMenusDetailScreen(
     LaunchedEffect(setId) { setMenusViewModel.startSet(setId) }
     LaunchedEffect(Unit) {
         if (recipesViewModel.allRecipes.isEmpty()) recipesViewModel.fetchAllRecipes()
+    }
+    val allRecipes = recipesViewModel.allRecipes
+
+    val salads by remember(allRecipes) {
+        derivedStateOf { allRecipes.filter { it.diets.any { d -> d.equals("Salad", true) } } }
+    }
+    val drinks by remember(allRecipes) {
+        derivedStateOf { allRecipes.filter { it.diets.any { d -> d.equals("Drink", true) } } }
     }
 
     val ui by setMenusViewModel.uiState.collectAsState()
@@ -102,7 +108,6 @@ fun SetMenusDetailScreen(
             )
         }
 
-
         // 顶部 Tabs
         item {
             TabRow(selectedTabIndex = categories.indexOf(currentTab)) {
@@ -136,7 +141,7 @@ fun SetMenusDetailScreen(
                 ) {
                     items(list, key = { it.id }) { recipe ->
                         val selected = setMenusViewModel.isSelected(currentTab, recipe.id)
-                        RecipePickCardHorizontal(
+                        RecipePickCard(
                             recipe = recipe,
                             checked = selected,
                             enabled = selected || !reached, // 达上限后，仅允许取消已选
@@ -147,9 +152,24 @@ fun SetMenusDetailScreen(
             }
         }
 
+        // —— 固定项：Salad ——（标题=Salad，下面横向所有 Salad 卡片）
+        item {
+            FixedCategoryRow(
+                title = "Salad",
+                recipes = salads
+            )
+        }
+        // —— 固定项：Drink ——（标题=Drink，下面横向所有 Drink 卡片）
+        item {
+            FixedCategoryRow(
+                title = "Drink",
+                recipes = drinks
+            )
+        }
 
 
-        // 底部说明 + 确认按钮
+
+        // Confirm Button
         item {
             Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
 
@@ -197,65 +217,6 @@ private fun HeaderBlockCompact(
     }
 }
 
-@Composable
-fun RecipePickCardHorizontal(
-    recipe: Recipe,
-    checked: Boolean,
-    enabled: Boolean,
-    onToggle: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val shape = RoundedCornerShape(12.dp)
-
-    Card(
-        shape = shape,
-        modifier = modifier
-            .width(160.dp)     // 卡片宽度可按需调整
-            .height(210.dp)
-            .then(if (enabled) Modifier.clickable { onToggle() } else Modifier),
-        border = BorderStroke(1.dp, if (checked) MaterialTheme.colorScheme.primary else Color.LightGray)
-    ) {
-        Column {
-            Box {
-                AsyncImage(
-                    model = recipe.image,
-                    contentDescription = recipe.title,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(140.dp)
-                        .clip(shape),
-                    contentScale = ContentScale.Crop,
-                    alpha = if (enabled || checked) 1f else 0.5f
-                )
-                // 右上角复选
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
-                    tonalElevation = 2.dp,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                ) {
-                    Checkbox(
-                        checked = checked,
-                        onCheckedChange = { if (enabled) onToggle() },
-                        enabled = enabled
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = recipe.title,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .padding(horizontal = 10.dp)
-                    .fillMaxWidth(),
-                maxLines = 2
-            )
-        }
-    }
-}
 
 /* ===================== 工具函数 ===================== */
 

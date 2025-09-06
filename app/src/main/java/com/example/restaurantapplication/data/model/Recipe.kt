@@ -43,6 +43,11 @@ data class SetMenu(            // 套餐定义
     val imageUrl: String
 )
 
+data class FixedItem(
+    val title: String,
+    val imageUrl: String
+)
+
 data class CartItem(
     val recipeId: String = "",
     val title: String = "",
