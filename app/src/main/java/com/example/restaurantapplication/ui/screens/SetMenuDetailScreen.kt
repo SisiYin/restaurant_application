@@ -119,6 +119,7 @@ fun SetMenusDetailScreen(
                     )
                 }
             }
+            Spacer(Modifier.height(4.dp))
         }
 
         // 当前类目菜品（横向单行，可滑动）
@@ -150,6 +151,7 @@ fun SetMenusDetailScreen(
                     }
                 }
             }
+            Spacer(Modifier.height(8.dp))
         }
 
         // —— 固定项：Salad ——（标题=Salad，下面横向所有 Salad 卡片）
@@ -158,6 +160,8 @@ fun SetMenusDetailScreen(
                 title = "Salad",
                 recipes = salads
             )
+            Spacer(Modifier.height(8.dp))
+
         }
         // —— 固定项：Drink ——（标题=Drink，下面横向所有 Drink 卡片）
         item {
@@ -165,9 +169,8 @@ fun SetMenusDetailScreen(
                 title = "Drink",
                 recipes = drinks
             )
+            Spacer(Modifier.height(8.dp))
         }
-
-
 
         // Confirm Button
         item {
@@ -199,15 +202,22 @@ private fun HeaderBlockCompact(
     dessert: Pair<Int, Int>
 ) {
     Column(Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
+        //Title
         Text(title, style = MaterialTheme.typography.titleLarge)
-        Spacer(Modifier.height(6.dp))
-        Text(summary, style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray))
         Spacer(Modifier.height(8.dp))
+
+        //Summary
+        Text(summary, style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray))
+        Spacer(Modifier.height(4.dp))
+
         Text(
             "Salad and Drink are fixed; pick the others up to the quota.",
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray
         )
+        Spacer(Modifier.height(8.dp))
+
+        //Selected dish number
         Text(
             text = "Main Dish ${mainDish.first}/${mainDish.second}  |  " +
                     "Sushi ${sushi.first}/${sushi.second}  |  " +

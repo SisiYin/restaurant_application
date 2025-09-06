@@ -48,7 +48,7 @@ fun AppScaffold(
         topBar = {
             when (currentRoute) {
                 "home" -> TopBar(navController)
-                "list" -> ScreenTopBar("Result",navController)
+                "list" -> ScreenTopBar("List",navController)
 //                "favorites" -> ScreenTopBar("Favorites",navController)
 //                "profile" -> ScreenTopBar("Profile",navController)
                 "settings" -> ScreenTopBar("Settings",navController)
