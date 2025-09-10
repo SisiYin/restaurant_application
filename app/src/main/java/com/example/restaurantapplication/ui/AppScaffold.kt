@@ -6,6 +6,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -13,7 +15,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.restaurantapplication.domain.pricing.computeSetPrice
 import com.example.restaurantapplication.ui.appbars.BottomBar
+import com.example.restaurantapplication.ui.appbars.BottomPriceBar
 import com.example.restaurantapplication.ui.appbars.ScreenTopBar
 import com.example.restaurantapplication.ui.appbars.TopBar
 import com.example.restaurantapplication.ui.screens.HomeScreen
@@ -69,6 +73,23 @@ fun AppScaffold(
                 "recipes/{recipeId}" -> {
                 }
                 "setMenus/{id}" -> {
+                    val ui by setMenusViewModel.uiState.collectAsState()
+                    ui.currentSet?.let { set ->
+                        // 价格计算：跟随 ui 状态
+                        val price = remember(ui) { computeSetPrice(set, ui.selections) }
+
+                        BottomPriceBar(
+                            base = price.baseCents,
+                            up = price.upchargeCents,
+                            total = price.totalCents,
+                            enabled = ui.isCompleted,
+                            onConfirm = {
+                                // TODO: 下单 / 跳转
+                                // val checkout = setMenusViewModel.buildCheckout()
+                                // navController.navigate("checkout")
+                            }
+                        )
+                    }
                 }
                 else -> {
                     BottomBar(navController)

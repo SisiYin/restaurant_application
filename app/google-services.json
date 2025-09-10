@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "219784939441",
+    "project_id": "okiniiri-restaurant",
+    "storage_bucket": "okiniiri-restaurant.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219784939441:android:ad2a809a80d3fb02c09f90",
+        "android_client_info": {
+          "package_name": "com.example.restaurantapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdrxnOy1zFjt8NcAvLBAFfxcVCJseF21c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

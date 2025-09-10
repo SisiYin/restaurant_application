@@ -41,8 +41,14 @@ import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
 import com.example.restaurantapplication.data.model.FixedItem
 import com.example.restaurantapplication.data.model.Recipe
+import com.example.restaurantapplication.domain.pricing.computeSetPrice
+import com.example.restaurantapplication.domain.pricing.upchargeOf
 import com.example.restaurantapplication.ui.components.FixedCategoryRow
 import com.example.restaurantapplication.ui.components.RecipePickCard
+import com.example.restaurantapplication.ui.util.EuroText
+import com.example.restaurantapplication.ui.util.euro
+import com.example.restaurantapplication.ui.util.inCategory
+import com.example.restaurantapplication.ui.util.label
 
 @Composable
 fun SetMenusDetailScreen(
@@ -79,6 +85,7 @@ fun SetMenusDetailScreen(
         recipesViewModel.allRecipes.filter { it.inCategory(currentTab) }
     }
     val reached = setMenusViewModel.reachedLimit(currentTab)
+    //val price by remember(ui) { derivedStateOf { computeSetPrice(set, ui.selections) } }
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -142,11 +149,13 @@ fun SetMenusDetailScreen(
                 ) {
                     items(list, key = { it.id }) { recipe ->
                         val selected = setMenusViewModel.isSelected(currentTab, recipe.id)
+                        val extra = upchargeOf(set, recipe.id)
                         RecipePickCard(
                             recipe = recipe,
                             checked = selected,
-                            enabled = selected || !reached, // 达上限后，仅允许取消已选
-                            onToggle = { setMenusViewModel.toggle(currentTab, recipe.id) }
+                            enabled = selected || !reached,
+                            onToggle = { setMenusViewModel.toggle(currentTab, recipe.id) },
+                            extraCents = extra
                         )
                     }
                 }
@@ -173,22 +182,45 @@ fun SetMenusDetailScreen(
         }
 
         // Confirm Button
-        item {
-            Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+//        item {
+//            Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+//
+//                Button(
+//                    onClick = onDone,
+//                    enabled = ui.isCompleted,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 12.dp)
+//                ) {
+//                    Text("Confirm ${set.name}")
+//                }
+//            }
+//        }
 
-                Button(
-                    onClick = onDone,
-                    enabled = ui.isCompleted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp)
-                ) {
-                    Text("Confirm ${set.name}")
-                }
-            }
-        }
 
     }
+
+//    Scaffold(
+//        bottomBar = {
+//            BottomPriceBar(
+//                base = price.baseCents,
+//                up = price.upchargeCents,
+//                total = price.totalCents,
+//                enabled = ui.isCompleted,
+//                onConfirm = onDone
+//            )
+//        }
+//    ) { inner ->
+//        LazyColumn(
+//            modifier = modifier
+//                .fillMaxSize()
+//                .padding(inner), // 避免被底部栏遮住
+//            contentPadding = PaddingValues(bottom = 16.dp)
+//        ) {
+//            // … 头图/标题/Tab/列表/固定项 … 原内容保留
+//            // 注意：把之前的确认 item 全部删掉
+//        }
+//    }
 }
 
 /* ===================== 辅助 UI ===================== */
@@ -226,18 +258,37 @@ private fun HeaderBlockCompact(
         )
     }
 }
-
-
-/* ===================== 工具函数 ===================== */
-
-private fun Recipe.inCategory(cat: DietCategory): Boolean = when (cat) {
-    DietCategory.MainDish -> diets.any { it.equals("Main Dish", ignoreCase = true) }
-    DietCategory.Sushi    -> diets.any { it.equals("Sushi", ignoreCase = true) }
-    DietCategory.Dessert  -> diets.any { it.equals("Dessert", ignoreCase = true) }
+@Composable
+private fun BottomPriceBar(
+    base: Int,
+    up: Int,
+    total: Int,
+    enabled: Boolean,
+    onConfirm: () -> Unit
+) {
+    Surface(tonalElevation = 3.dp) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text("Base"); EuroText(base)
+                }
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text("Upcharges"); EuroText(up)
+                }
+                Text("Total", style = MaterialTheme.typography.labelLarge)
+                EuroText(total, style = MaterialTheme.typography.titleMedium)
+            }
+            Button(onClick = onConfirm, enabled = enabled) {
+                Text("Confirm • ${euro(total)}")
+            }
+        }
+    }
 }
 
-private fun DietCategory.label(): String = when (this) {
-    DietCategory.MainDish -> "Main Dish"
-    DietCategory.Sushi    -> "Sushi"
-    DietCategory.Dessert  -> "Dessert"
-}
+

@@ -20,15 +20,32 @@ data class RecipeDetail(
     var id: Int,
     var title: String,
     var image: String,
-    //var readyInMinutes: Int,
-    //var servings: Int,
     var summary: String,
     var pricePerServing: Float,
-    //var caloriesPerServing: Int,
-    //var healthScore: Double,
     var diets: List<String>,
     var extendedIngredients: List<Ingredient>,
 )
+
+data class Ingredient(
+    var name: String
+)
+
+data class FsDish(
+    var id: Int = 0,
+    var title: String = "",
+    var imageUrl: String = "",
+    var summary: String = "",
+    var pricePerServing: Double = 0.0,
+    var diets: List<String> = emptyList(),
+    var extendedIngredients: List<String> = emptyList()
+)
+
+fun FsDish.toRecipe() = Recipe(id, title, diets, imageUrl)
+fun FsDish.toRecipeDetail() = RecipeDetail(
+    id, title, imageUrl, summary, pricePerServing.toFloat(),
+    diets, extendedIngredients.map { Ingredient(it) }
+)
+
 
 enum class DietCategory { MainDish, Sushi, Dessert }
 
@@ -40,7 +57,9 @@ data class SetMenu(            // 套餐定义
     val includedFixed: List<String> = listOf("Salad", "Drink"),
     val summary: String,
     val price: Int = 0,
-    val imageUrl: String
+    val imageUrl: String,
+    val basePriceCents: Int,                  // 套餐基础价（含固定项+配额内）
+    val upchargesByRecipeId: Map<Int, Int> = emptyMap() // 每道菜的加价（选中才生效）
 )
 
 data class FixedItem(
@@ -95,6 +114,3 @@ data class User(
 
 
 // 配料类
-data class Ingredient(
-    var name: String
-)

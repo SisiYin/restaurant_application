@@ -1,12 +1,17 @@
 [versions]
 agp = "8.7.3"
 coilCompose = "2.4.0"
+coilComposeVersion = "2.6.0"
+firebaseBom = "34.2.0"
+firebaseBomVersion = "33.3.0"
 jsoup = "1.17.2"
 kotlin = "2.0.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
+kotlinxCoroutinesPlayServices = "1.7.3"
+kotlinxCoroutinesPlayServicesVersion = "1.8.1"
 lifecycleRuntimeKtx = "2.9.2"
 activityCompose = "1.10.1"
 composeBom = "2024.04.01"
@@ -25,6 +30,21 @@ media3 = "1.3.1"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-compose-v260 = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
+com-google-firebase-firebase-common-ktx = { module = "com.google.firebase:firebase-common-ktx" }
+com-google-firebase-firebase-common-ktx2 = { module = "com.google.firebase:firebase-common-ktx" }
+com-google-firebase-firebase-common-ktx3 = { module = "com.google.firebase:firebase-common-ktx" }
+com-google-firebase-firebase-common-ktx4 = { module = "com.google.firebase:firebase-common-ktx" }
+com-google-firebase-firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
+com-google-firebase-firebase-firestore-ktx2 = { module = "com.google.firebase:firebase-firestore-ktx" }
+com-google-firebase-firebase-firestore-ktx3 = { module = "com.google.firebase:firebase-firestore-ktx" }
+com-google-firebase-firebase-firestore-ktx4 = { module = "com.google.firebase:firebase-firestore-ktx" }
+com-google-firebase-firebase-firestore-ktx5 = { module = "com.google.firebase:firebase-firestore-ktx" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-bom-v3330 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
+firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
+google-firebase-common-ktx = { module = "com.google.firebase:firebase-common-ktx" }
+google-firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -46,6 +66,8 @@ firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-k
 androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 # Media3 (ExoPlayer + UI)
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
+kotlinx-coroutines-play-services-v181 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServicesVersion" }
 media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
 media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
 media3-session = { module = "androidx.media3:media3-session", version.ref = "media3" }

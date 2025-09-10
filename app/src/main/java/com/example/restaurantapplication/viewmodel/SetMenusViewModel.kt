@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlin.math.max
 
+
 data class SetMenusUiState(
     val currentSet: SetMenu? = null,
     // 每个类目 -> 已选 recipeId 集合
@@ -78,6 +79,7 @@ class SetMenusViewModel(
     /** 当前类目是否达到上限（用于禁用未选项） */
     fun reachedLimit(cat: DietCategory): Boolean =
         _uiState.value.count(cat) >= _uiState.value.limit(cat)
+
 
     /** 构建结算载荷（把已选的 id 交给下单页；固定项自动带上） */
     fun buildCheckout(): SetCheckout {
