@@ -80,7 +80,7 @@ sealed class CartLine {
         override val qty: Int = 1,
         val setId: String,
         val imageUrl: String?,
-        val selections: Map<DietCategory, List<Int>> // 每类选中的 recipeId（Int）
+        val selections: Map<DietCategory, Set<Int>> // 每类选中的 recipeId（Int）
     ) : CartLine()
 
     data class DishLine(

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import com.example.restaurantapplication.viewmodel.CartViewModel
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.UserViewModel
 
@@ -13,9 +14,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val recipesViewModel: RecipesViewModel by viewModels()
+        val cartViewModel: CartViewModel by viewModels()
 
         setContent {
-            AppScaffold(userViewModel, recipesViewModel)
+            AppScaffold(userViewModel, recipesViewModel, cartViewModel)
         }
     }
 //    private val credentialManager by lazy { CredentialManager.create(this) }

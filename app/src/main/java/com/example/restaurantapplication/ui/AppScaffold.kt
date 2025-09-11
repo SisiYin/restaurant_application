@@ -21,12 +21,14 @@ import com.example.restaurantapplication.ui.appbars.BottomPriceBar
 import com.example.restaurantapplication.ui.appbars.DetailBottomBar
 import com.example.restaurantapplication.ui.appbars.ScreenTopBar
 import com.example.restaurantapplication.ui.appbars.TopBar
+import com.example.restaurantapplication.ui.screens.CartScreen
 import com.example.restaurantapplication.ui.screens.HomeScreen
 import com.example.restaurantapplication.ui.screens.InfoScreen
 import com.example.restaurantapplication.ui.screens.MenuScreen
 import com.example.restaurantapplication.ui.screens.RecipeDetailScreen
 import com.example.restaurantapplication.ui.screens.SetMenusDetailScreen
 import com.example.restaurantapplication.ui.screens.SettingsScreen
+import com.example.restaurantapplication.viewmodel.CartViewModel
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.UserViewModel
 import com.example.restaurantapplication.viewmodel.SetMenusViewModel
@@ -35,6 +37,7 @@ import com.example.restaurantapplication.viewmodel.SetMenusViewModel
 fun AppScaffold(
     userViewModel: UserViewModel,
     recipesViewModel: RecipesViewModel,
+    cartViewModel: CartViewModel,
 ) {
     val navController = rememberNavController() // create NavController
     val backStackEntry = navController.currentBackStackEntryAsState()
@@ -58,7 +61,7 @@ fun AppScaffold(
 //                "profile" -> ScreenTopBar("Profile",navController)
                 "settings" -> ScreenTopBar("Settings",navController)
                 "info" -> ScreenTopBar("Info",navController)
-//                "cart" -> ScreenTopBar("Cart",navController)
+                "cart" -> ScreenTopBar("Cart",navController)
                 "recipes/{recipeId}" -> ScreenTopBar("Recipes",navController)
                 "setMenus/{id}" -> ScreenTopBar("Set Menu", navController)
 //                "checkout" -> ScreenTopBar("Confirm Orders",navController)
@@ -99,9 +102,16 @@ fun AppScaffold(
                             total = price.totalCents,
                             enabled = ui.isCompleted,
                             onConfirm = {
-                                // TODO: 下单 / 跳转
-                                // val checkout = setMenusViewModel.buildCheckout()
-                                // navController.navigate("checkout")
+                                cartViewModel.addSet(
+                                    setId = set.id,
+                                    setName = set.name,
+                                    imageUrl = set.imageUrl,
+                                    basePriceCents = price.baseCents,
+                                    upchargeCents = price.upchargeCents,
+                                    selections = ui.selections       // Map<DietCategory, List<Int>>
+                                )
+                                // ✅ 跳转购物车
+                                navController.navigate("cart")
                             }
                         )
                     }
@@ -127,7 +137,7 @@ fun AppScaffold(
                 composable(route = "info") { InfoScreen(modifier) }
                 composable(route = "settings") { SettingsScreen(modifier) }
 //                composable(route = "profile") { ProfileScreen(navController,modifier,userViewModel) }
-//                composable(route = "cart") { CartScreen(navController=navController,modifier=modifier,userViewModel = userViewModel) }
+                composable(route = "cart") { CartScreen(navController,recipesViewModel,cartViewModel,modifier)}
 //                composable(route = "checkout") { CheckoutScreen(navController=navController,modifier=modifier,userViewModel = userViewModel) }
 //                composable(route = "orders") { OrderScreen(navController=navController,modifier=modifier,userViewModel = userViewModel) }
 ////                composable(route = "all_orders") { AdminOrderScreen(modifier=modifier) }
