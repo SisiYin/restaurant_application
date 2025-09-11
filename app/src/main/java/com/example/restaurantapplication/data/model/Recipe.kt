@@ -1,5 +1,7 @@
 package com.example.restaurantapplication.data.model
 
+import java.util.UUID
+
 //import com.google.firebase.Timestamp
 
 
@@ -62,10 +64,39 @@ data class SetMenu(            // 套餐定义
     val upchargesByRecipeId: Map<Int, Int> = emptyMap() // 每道菜的加价（选中才生效）
 )
 
-data class FixedItem(
-    val title: String,
-    val imageUrl: String
-)
+
+//Cart
+
+sealed class CartLine {
+    abstract val id: String
+    abstract val title: String
+    abstract val priceCents: Int
+    abstract val qty: Int
+
+    data class SetMenuLine(
+        override val id: String = UUID.randomUUID().toString(),
+        override val title: String,
+        override val priceCents: Int,          // base + upcharge（单份）
+        override val qty: Int = 1,
+        val setId: String,
+        val imageUrl: String?,
+        val selections: Map<DietCategory, List<Int>> // 每类选中的 recipeId（Int）
+    ) : CartLine()
+
+    data class DishLine(
+        override val id: String = UUID.randomUUID().toString(),
+        override val title: String,
+        override val priceCents: Int,          // 单份
+        override val qty: Int = 1,
+        val recipeId: Int,
+        val imageUrl: String?
+    ) : CartLine()
+}
+
+data class CartUiState(val lines: List<CartLine> = emptyList()) {
+    val subtotalCents: Int = lines.sumOf { it.priceCents * it.qty }
+    val count: Int = lines.sumOf { it.qty }
+}
 
 data class CartItem(
     val recipeId: String = "",

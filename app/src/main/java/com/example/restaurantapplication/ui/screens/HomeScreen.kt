@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,6 +28,8 @@ import com.example.restaurantapplication.ui.components.FilterChip
 import com.example.restaurantapplication.ui.components.RecipeSection
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import com.example.restaurantapplication.R
 import com.example.restaurantapplication.ui.components.LocalVideoPlayer
 
@@ -38,8 +41,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     recipesViewModel: RecipesViewModel,
 ){
-    val categories = listOf("About Us","Menus","Contact Us")
-    var selectedCategory by remember { mutableStateOf<String?>(null) }
     var searchWord by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
@@ -64,24 +65,6 @@ fun HomeScreen(
         }
 
         item {
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                categories.forEach { category ->
-                    FilterChip(
-                        category = category,
-                        selected = selectedCategory == category,
-                        onClick = {
-                            selectedCategory =
-                                if (selectedCategory == category) null else category
-                        }
-                    )
-                }
-            }
-        }
-
-        item {
             LocalVideoPlayer(
                 rawResId = R.raw.restaurant_intro,        // 你的文件名 restaurant.mp4
                 modifier = Modifier
@@ -95,15 +78,31 @@ fun HomeScreen(
         }
 
         item {
-            RecipeSection("Newest", recipes.take(3), navController, recipesViewModel)
+            Row(
+                modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Button(
+                    onClick = { navController.navigate("menu") },
+                    modifier = Modifier.weight(1f)
+                ) { Text("View full menu") }
+
+                OutlinedButton(
+                    onClick = { navController.navigate("menu") /* 或 set menus 列表 */ },
+                    modifier = Modifier.weight(1f)
+                ) { Text("Set menus") }
+            }
         }
 
         item {
-            RecipeSection("Popular", recipes.shuffled().take(3), navController, recipesViewModel)
+            RecipeSection("Newest", recipes.take(4), navController, recipesViewModel)
         }
 
         item {
-            RecipeSection("Recommended", recipes.shuffled().take(3), navController, recipesViewModel)
+            RecipeSection("Popular", recipes.shuffled().take(6), navController, recipesViewModel)
         }
+
+
+
     }
 }

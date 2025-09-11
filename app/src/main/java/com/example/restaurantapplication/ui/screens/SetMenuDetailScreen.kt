@@ -39,9 +39,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
-import com.example.restaurantapplication.data.model.FixedItem
-import com.example.restaurantapplication.data.model.Recipe
-import com.example.restaurantapplication.domain.pricing.computeSetPrice
 import com.example.restaurantapplication.domain.pricing.upchargeOf
 import com.example.restaurantapplication.ui.components.FixedCategoryRow
 import com.example.restaurantapplication.ui.components.RecipePickCard
@@ -181,49 +178,11 @@ fun SetMenusDetailScreen(
             Spacer(Modifier.height(8.dp))
         }
 
-        // Confirm Button
-//        item {
-//            Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-//
-//                Button(
-//                    onClick = onDone,
-//                    enabled = ui.isCompleted,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(top = 12.dp)
-//                ) {
-//                    Text("Confirm ${set.name}")
-//                }
-//            }
-//        }
-
-
     }
 
-//    Scaffold(
-//        bottomBar = {
-//            BottomPriceBar(
-//                base = price.baseCents,
-//                up = price.upchargeCents,
-//                total = price.totalCents,
-//                enabled = ui.isCompleted,
-//                onConfirm = onDone
-//            )
-//        }
-//    ) { inner ->
-//        LazyColumn(
-//            modifier = modifier
-//                .fillMaxSize()
-//                .padding(inner), // 避免被底部栏遮住
-//            contentPadding = PaddingValues(bottom = 16.dp)
-//        ) {
-//            // … 头图/标题/Tab/列表/固定项 … 原内容保留
-//            // 注意：把之前的确认 item 全部删掉
-//        }
-//    }
 }
 
-/* ===================== 辅助 UI ===================== */
+
 
 @Composable
 private fun HeaderBlockCompact(
@@ -256,38 +215,6 @@ private fun HeaderBlockCompact(
                     "Dessert ${dessert.first}/${dessert.second}",
             style = MaterialTheme.typography.labelLarge
         )
-    }
-}
-@Composable
-private fun BottomPriceBar(
-    base: Int,
-    up: Int,
-    total: Int,
-    enabled: Boolean,
-    onConfirm: () -> Unit
-) {
-    Surface(tonalElevation = 3.dp) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Base"); EuroText(base)
-                }
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Upcharges"); EuroText(up)
-                }
-                Text("Total", style = MaterialTheme.typography.labelLarge)
-                EuroText(total, style = MaterialTheme.typography.titleMedium)
-            }
-            Button(onClick = onConfirm, enabled = enabled) {
-                Text("Confirm • ${euro(total)}")
-            }
-        }
     }
 }
 

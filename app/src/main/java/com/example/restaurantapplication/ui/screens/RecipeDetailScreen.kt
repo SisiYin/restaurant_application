@@ -66,8 +66,7 @@ fun RecipeDetailScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
-                    .padding(bottom = 80.dp), //
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ){
                 item {
@@ -180,17 +179,17 @@ fun RecipeDetailScreen(
 
 
             }
-            DetailBottomBar(
-                navController = navController,
-                userId = userId,
-                recipeId = recipeId,
-                title = recipeDetail?.title ?: "",
-                image = recipeDetail?.image ?: "",
-                userViewModel = userViewModel,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-            )
+//            DetailBottomBar(
+//                navController = navController,
+//                userId = userId,
+//                recipeId = recipeId,
+//                title = recipeDetail?.title ?: "",
+//                image = recipeDetail?.image ?: "",
+//                userViewModel = userViewModel,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .align(Alignment.BottomCenter)
+//            )
         }
     }
 }

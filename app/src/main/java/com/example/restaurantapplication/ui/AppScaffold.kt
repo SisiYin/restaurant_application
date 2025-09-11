@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.restaurantapplication.domain.pricing.computeSetPrice
 import com.example.restaurantapplication.ui.appbars.BottomBar
 import com.example.restaurantapplication.ui.appbars.BottomPriceBar
+import com.example.restaurantapplication.ui.appbars.DetailBottomBar
 import com.example.restaurantapplication.ui.appbars.ScreenTopBar
 import com.example.restaurantapplication.ui.appbars.TopBar
 import com.example.restaurantapplication.ui.screens.HomeScreen
@@ -52,7 +53,7 @@ fun AppScaffold(
         topBar = {
             when (currentRoute) {
                 "home" -> TopBar(navController)
-                "list" -> ScreenTopBar("List",navController)
+                "menu" -> ScreenTopBar("Menu",navController)
 //                "favorites" -> ScreenTopBar("Favorites",navController)
 //                "profile" -> ScreenTopBar("Profile",navController)
                 "settings" -> ScreenTopBar("Settings",navController)
@@ -71,6 +72,20 @@ fun AppScaffold(
         bottomBar = {
             when (currentRoute) {
                 "recipes/{recipeId}" -> {
+                    val args = backStackEntry.value?.arguments
+                    val id = args?.getString("recipeId")?.toIntOrNull()
+                    val recipe = remember(id, recipesViewModel.allRecipes) {
+                        recipesViewModel.allRecipes.firstOrNull { it.id == id }
+                    }
+                    recipe?.let { r ->
+                        DetailBottomBar(
+                            navController = navController,
+                            userId = "123456", // 按你的实现替换
+                            recipeId = r.id,
+                            title = r.title,
+                            image = r.image
+                        )
+                    }
                 }
                 "setMenus/{id}" -> {
                     val ui by setMenusViewModel.uiState.collectAsState()
@@ -106,7 +121,7 @@ fun AppScaffold(
                 startDestination = "home"
             ) {
                 composable(route = "home") { HomeScreen(navController, modifier, recipesViewModel) }
-                composable(route = "list") { MenuScreen(navController, modifier, recipesViewModel) }
+                composable(route = "menu") { MenuScreen(navController, modifier, recipesViewModel) }
 
 //                composable(route = "login") { LoginScreen(navController=navController,modifier=modifier,userViewModel=userViewModel) }
                 composable(route = "info") { InfoScreen(modifier) }
