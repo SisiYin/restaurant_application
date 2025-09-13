@@ -24,6 +24,7 @@ import com.example.restaurantapplication.ui.appbars.SetBottomBar
 import com.example.restaurantapplication.ui.appbars.TopBar
 import com.example.restaurantapplication.ui.screens.CartScreen
 import com.example.restaurantapplication.ui.screens.CheckoutScreen
+import com.example.restaurantapplication.ui.screens.FavoriteScreen
 import com.example.restaurantapplication.ui.screens.HomeScreen
 import com.example.restaurantapplication.ui.screens.InfoScreen
 import com.example.restaurantapplication.ui.screens.MenuScreen
@@ -60,7 +61,7 @@ fun AppScaffold(
             when (currentRoute) {
                 "home" -> TopBar(navController)
                 "menu" -> ScreenTopBar("Menu",navController)
-//                "favorites" -> ScreenTopBar("Favorites",navController)
+                "favorites" -> ScreenTopBar("Favorites",navController)
 //                "profile" -> ScreenTopBar("Profile",navController)
                 "settings" -> ScreenTopBar("Settings",navController)
                 "info" -> ScreenTopBar("Info",navController)
@@ -132,6 +133,14 @@ fun AppScaffold(
                     CartBottomBar(
                         total = ui.selectedSubtotalCents,
                         enabled = ui.lines.isNotEmpty(),
+                        allSelected = ui.lines.isNotEmpty() && ui.selectedIds.size == ui.lines.size,
+                        onToggleAll = {
+                            if (ui.selectedIds.size == ui.lines.size) {
+                                cartViewModel.clearSelection()
+                            } else {
+                                cartViewModel.selectAll()
+                            }
+                        },
                         onSubmit = {
                              navController.navigate("checkout")
                         }
@@ -162,7 +171,7 @@ fun AppScaffold(
                 composable(route = "checkout") { CheckoutScreen(navController=navController,modifier=modifier,userViewModel = userViewModel) }
 //                composable(route = "orders") { OrderScreen(navController=navController,modifier=modifier,userViewModel = userViewModel) }
 //                composable(route = "all_orders") { AdminOrderScreen(modifier=modifier) }
-//                composable(route = "favorites") { FavoriteScreen(navController,modifier,userViewModel,recipesViewModel) }
+                composable(route = "favorites") { FavoriteScreen(navController,userViewModel,recipesViewModel,modifier) }
                 composable("recipes/{recipeId}") { backStackEntry ->
                     val recipeId = backStackEntry.arguments?.getString("recipeId")?.toInt() ?: 0
                     RecipeDetailScreen(

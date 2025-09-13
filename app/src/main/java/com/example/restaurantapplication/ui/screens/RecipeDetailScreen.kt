@@ -39,6 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.restaurantapplication.ui.components.DietRow
+import com.example.restaurantapplication.ui.components.HeroImage
+import com.example.restaurantapplication.ui.util.euro
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.UserViewModel
 import org.jsoup.Jsoup
@@ -62,7 +65,7 @@ fun RecipeDetailScreen(
         return
     }
 
-        //var isFavorite by remember { mutableStateOf(false) }
+        var isFavorite by remember { mutableStateOf(false) }
         val cleanSummary = Jsoup.parse(recipe.summary).text()
         var isExpanded by remember { mutableStateOf(false) }
 
@@ -77,44 +80,31 @@ fun RecipeDetailScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ){
                 item {
-                    AsyncImage(
-                        model = recipe.image,
-                        contentDescription = recipe.title,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 180.dp, max = 280.dp) // 限制高度范围，但不固定死
-                            .clip(RoundedCornerShape(16.dp)),
-                        contentScale = ContentScale.Crop
+//                    HeroImage(url = recipe.image, title = recipe.title, onFav = { /* TODO: toggle favorite */ })
+                    HeroImage(
+                        url = recipe.image,
+                        title = recipe.title,
+                        isFavorite = isFavorite,
+                        onToggleFavorite = { isFavorite = !isFavorite }, // TODO: 同步到 VM/Firestore
                     )
-
                 }
 
-                item{
-                    recipe.diets?.let { diets ->
-
-                        FlowRow(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            diets.forEach { diet ->
-                                AssistChip(
-                                    onClick = {  },
-                                    label = { Text(text = diet) },
-                                    colors = AssistChipDefaults.assistChipColors(
-                                        containerColor = getDietColor(diet) // 动态生成颜色
-                                    )
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-                }
-
-                //title
                 item {
+                    DietRow(diets = recipe.diets)
+                }
+
+                // 标题
+                item {
+                    Text(recipe.title, style = MaterialTheme.typography.headlineSmall)
+                    Spacer(Modifier.height(6.dp))
                     Text(
-                        text = recipe.title,
-                        style = MaterialTheme.typography.headlineSmall
+                        text = "Price per serving",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = euro(recipe.pricePerServing),
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
 
@@ -151,7 +141,7 @@ fun RecipeDetailScreen(
 
                 item{
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = "Price per serving:${recipe.pricePerServing} EUR")
+                    Text(text = "Price per serving:${euro(recipe.pricePerServing)} EUR")
 
                     Spacer(modifier = Modifier.height(16.dp))
 

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -50,7 +51,14 @@ fun SetBottomBar(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     // 底部条（只显示 Total + Confirm；点“Total”或图标展开明细）
-    Surface(tonalElevation = 3.dp) {
+    BottomAppBar(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(80.dp),   // ✅ 和其它统一高度
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        tonalElevation = 3.dp
+    )  {
         Row(
             modifier = modifier
                 .fillMaxWidth()
@@ -59,14 +67,6 @@ fun SetBottomBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // 可点击展开明细的 Total 区域
-//            Column(
-//                modifier = Modifier
-//                    .weight(1f)
-//                    .clickable { showSheet = true }
-//            ) {
-//                Text("Total", style = MaterialTheme.typography.labelLarge)
-//                EuroText(total, style = MaterialTheme.typography.titleMedium)
-//            }
             Row(
                 modifier = Modifier.weight(1f),
                 horizontalArrangement = Arrangement.Start

@@ -119,11 +119,6 @@ import com.example.restaurantapplication.ui.util.euro
 @Composable
 fun DishBottomBar(
     navController: NavController,
-//    userId: String?,
-//    recipeId: Int,
-//    title: String,
-//    image: String,
-//    userViewModel: UserViewModel = viewModel(),
     //priceCents: Int,
     enabled: Boolean = true,
     dishOnConfirm: () -> Unit,
@@ -140,11 +135,13 @@ fun DishBottomBar(
     )
 
     BottomAppBar(
-        modifier = modifier.fillMaxWidth(),
-        containerColor = scheme.surface,          // 与 BottomPriceBar 的 Surface 对齐
-        contentColor = scheme.onSurface,
-        tonalElevation = 3.dp                     // 同样 3dp 的“柔和”阴影
-    ) {
+        modifier = modifier
+            .fillMaxWidth()
+            .height(80.dp),   // ✅ 和其它统一高度
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        tonalElevation = 3.dp
+    )  {
         Row(
             modifier = Modifier.weight(1f),
             horizontalArrangement = Arrangement.Start,
