@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.restaurantapplication.data.model.CartLine
+import com.example.restaurantapplication.ui.util.euro
 import com.example.restaurantapplication.viewmodel.CartViewModel
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 
@@ -79,7 +81,7 @@ fun CartScreen(
             items(ui.lines, key = { it.id }) { line ->
                 when (line) {
                     is CartLine.SetMenuLine -> SetLineCard(line, cartViewModel,titleOf)
-                    is CartLine.DishLine -> DishLineCard(line, cartViewModel)
+                    is CartLine.DishLine -> DishLineCard(line, cartViewModel,titleOf)
                 }
                 Spacer(Modifier.height(8.dp))
             }
@@ -90,15 +92,26 @@ fun CartScreen(
 @Composable
 private fun SetLineCard(
     line: CartLine.SetMenuLine,
-    cart: CartViewModel,
+    cartViewModel: CartViewModel,
     titleOf: (Int) -> String?
 ) {
+    //勾选状态
+    val ui by cartViewModel.uiState.collectAsState()
+    val checked = ui.selectedIds.contains(line.id)
     Card {
         Row(
             Modifier
                 .padding(8.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            Checkbox(
+                checked = checked,
+                onCheckedChange = { cartViewModel.toggleSelect(line.id)  },
+                modifier = Modifier.size(16.dp)
+                    .padding(start = 0.dp)
+            )
+            Spacer(Modifier.width(8.dp))
             // 左侧图片
             AsyncImage(
                 model = line.imageUrl,
@@ -127,7 +140,7 @@ private fun SetLineCard(
                         modifier = Modifier.weight(1f)
                     )
                     IconButton(
-                        onClick = { cart.remove(line.id) },
+                        onClick = { cartViewModel.remove(line.id) },
                         modifier = Modifier.size(32.dp)
                     ) {
                         Icon(
@@ -172,7 +185,7 @@ private fun SetLineCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = centsToEuro(line.priceCents),
+                        text = euro(line.priceCents),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.weight(1f)
@@ -180,7 +193,7 @@ private fun SetLineCard(
                     QtyButtons(
                         lineId = line.id,
                         qty = line.qty,
-                        onChange = cart::changeQty
+                        onChange = cartViewModel::changeQty
                     )
                 }
             }
@@ -200,7 +213,16 @@ private fun selectionSummary(
 }
 
 @Composable
-private fun DishLineCard(line: CartLine.DishLine, cart: CartViewModel) {
+private fun DishLineCard(
+    line: CartLine.DishLine,
+    cartViewModel: CartViewModel,
+    titleOf: (Int) -> String?
+
+) {
+    //勾选状态
+    val ui by cartViewModel.uiState.collectAsState()
+    val checked = ui.selectedIds.contains(line.id)
+
     Card {
         Row(
             Modifier
@@ -208,6 +230,14 @@ private fun DishLineCard(line: CartLine.DishLine, cart: CartViewModel) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Checkbox(
+                checked = checked,
+                onCheckedChange = { cartViewModel.toggleSelect(line.id)  },
+                modifier = Modifier.size(16.dp)
+                                   .padding(start = 0.dp)
+            )
+            Spacer(Modifier.width(8.dp))
+
             AsyncImage(
                 model = line.imageUrl,
                 contentDescription = line.title,
@@ -218,47 +248,96 @@ private fun DishLineCard(line: CartLine.DishLine, cart: CartViewModel) {
             )
 
             Spacer(Modifier.width(12.dp))
-
-            // 文本区：标题 + 单价（灰色小字），不再显示总价，避免重复
-            Column(Modifier.weight(1f)) {
-                Text(
-                    line.title,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold)
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = centsToEuro(line.priceCents),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            // 右侧紧凑数量区（占比更小）
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                QtyButtons(
-                    lineId = line.id,
-                    qty = line.qty,
-                    onChange = cart::changeQty
-                )
-                IconButton(
-                    onClick = { cart.remove(line.id) },
-                    modifier = Modifier.size(32.dp)
+            // 右侧信息区（两行布局）
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Top,
+            ) {
+                // 第一行：标题 + 删除
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "Remove",
-                        modifier = Modifier.size(18.dp)
+                    Text(
+                        line.title,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    IconButton(
+                        onClick = { cartViewModel.remove(line.id) },
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "Remove",
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+                Spacer(Modifier.height(16.dp))
+
+                // 第二行：单价 + 数量按钮
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(
+                        text = euro(line.priceCents),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f)
+                    )
+                    QtyButtons(
+                        lineId = line.id,
+                        qty = line.qty,
+                        onChange = cartViewModel::changeQty
                     )
                 }
             }
+
+            // 文本区：标题 + 单价（灰色小字），不再显示总价，避免重复
+//            Column(Modifier.weight(1f)) {
+//                Text(
+//                    line.title,
+//                    style = MaterialTheme.typography.titleMedium.copy(
+//                    fontWeight = FontWeight.Bold)
+//                )
+//
+//
+//                Spacer(Modifier.height(8.dp))
+//                Text(
+//                    text = euro(line.priceCents),
+//                    style = MaterialTheme.typography.bodySmall,
+//                    color = MaterialTheme.colorScheme.onSurfaceVariant
+//                )
+//            }
+
+//            // 右侧紧凑数量区（占比更小）
+//            Row(verticalAlignment = Alignment.CenterVertically) {
+//                QtyButtons(
+//                    lineId = line.id,
+//                    qty = line.qty,
+//                    onChange = cart::changeQty
+//                )
+//                IconButton(
+//                    onClick = { cart.remove(line.id) },
+//                    modifier = Modifier.size(32.dp)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Filled.Delete,
+//                        contentDescription = "Remove",
+//                        modifier = Modifier.size(18.dp)
+//                    )
+//                }
+//            }
         }
     }
 }
 
 /** 紧凑版数量按钮：更小的触控面积与图标，减少占位 */
 @Composable
-private fun QtyButtons(
+fun QtyButtons(
     lineId: String,
     qty: Int,
     onChange: (String, Int) -> Unit
@@ -293,4 +372,3 @@ private fun QtyButtons(
     }
 }
 
-private fun centsToEuro(cents: Int): String = "€%.2f".format(cents / 100f)

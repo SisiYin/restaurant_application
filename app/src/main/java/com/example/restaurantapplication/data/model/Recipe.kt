@@ -97,9 +97,16 @@ sealed class CartLine {
     ) : CartLine()
 }
 
-data class CartUiState(val lines: List<CartLine> = emptyList()) {
+data class CartUiState(
+    val lines: List<CartLine> = emptyList(),
+    val selectedIds: Set<String> = emptySet()//selected state
+) {
     val subtotalCents: Int = lines.sumOf { it.priceCents * it.qty }
     val count: Int = lines.sumOf { it.qty }
+    // ✅ 只算已勾选的商品
+    val selectedSubtotalCents: Int =
+        lines.filter { selectedIds.contains(it.id) }
+            .sumOf { it.priceCents * it.qty }
 }
 
 data class CartItem(

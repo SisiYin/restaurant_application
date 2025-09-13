@@ -130,10 +130,9 @@ fun AppScaffold(
                 "cart" -> {
                     val ui by cartViewModel.uiState.collectAsState()
                     CartBottomBar(
-                        total = ui.subtotalCents,
+                        total = ui.selectedSubtotalCents,
                         enabled = ui.lines.isNotEmpty(),
                         onSubmit = {
-                            // TODO: 提交订单或跳转订单页
                              navController.navigate("checkout")
                         }
                     )

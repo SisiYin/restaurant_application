@@ -66,4 +66,26 @@ class CartViewModel : ViewModel() {
     }
 
     fun clear() { _ui.value = CartUiState() }
+
+    fun toggleSelect(lineId: String) {
+        _ui.value = _ui.value.run {
+            val newSelected = selectedIds.toMutableSet()
+            if (newSelected.contains(lineId)) {
+                newSelected.remove(lineId)
+            } else {
+                newSelected.add(lineId)
+            }
+            copy(selectedIds = newSelected)
+        }
+    }
+
+    fun selectAll() {
+        _ui.value = _ui.value.copy(
+            selectedIds = _ui.value.lines.map { it.id }.toSet()
+        )
+    }
+
+    fun clearSelection() {
+        _ui.value = _ui.value.copy(selectedIds = emptySet())
+    }
 }
