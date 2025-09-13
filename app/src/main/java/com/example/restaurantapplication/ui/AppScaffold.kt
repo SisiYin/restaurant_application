@@ -17,11 +17,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.restaurantapplication.domain.pricing.computeSetPrice
 import com.example.restaurantapplication.ui.appbars.BottomBar
-import com.example.restaurantapplication.ui.appbars.BottomPriceBar
-import com.example.restaurantapplication.ui.appbars.DetailBottomBar
+import com.example.restaurantapplication.ui.appbars.CartBottomBar
+import com.example.restaurantapplication.ui.appbars.DishBottomBar
 import com.example.restaurantapplication.ui.appbars.ScreenTopBar
+import com.example.restaurantapplication.ui.appbars.SetBottomBar
 import com.example.restaurantapplication.ui.appbars.TopBar
 import com.example.restaurantapplication.ui.screens.CartScreen
+import com.example.restaurantapplication.ui.screens.CheckoutScreen
 import com.example.restaurantapplication.ui.screens.HomeScreen
 import com.example.restaurantapplication.ui.screens.InfoScreen
 import com.example.restaurantapplication.ui.screens.MenuScreen
@@ -32,6 +34,7 @@ import com.example.restaurantapplication.viewmodel.CartViewModel
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.UserViewModel
 import com.example.restaurantapplication.viewmodel.SetMenusViewModel
+import kotlin.math.roundToInt
 
 @Composable
 fun AppScaffold(
@@ -64,7 +67,7 @@ fun AppScaffold(
                 "cart" -> ScreenTopBar("Cart",navController)
                 "recipes/{recipeId}" -> ScreenTopBar("Recipes",navController)
                 "setMenus/{id}" -> ScreenTopBar("Set Menu", navController)
-//                "checkout" -> ScreenTopBar("Confirm Orders",navController)
+                "checkout" -> ScreenTopBar("Confirm Orders",navController)
 //                "orders" -> ScreenTopBar("Orders",navController)
 //                //"Sign In/Sign Up" -> ScreenTopBar("Login",navController)
 //                "all_orders" -> ScreenTopBar("Manage All Orders",navController)
@@ -78,15 +81,23 @@ fun AppScaffold(
                     val args = backStackEntry.value?.arguments
                     val id = args?.getString("recipeId")?.toIntOrNull()
                     val recipe = remember(id, recipesViewModel.allRecipes) {
-                        recipesViewModel.allRecipes.firstOrNull { it.id == id }
+                        recipesViewModel.getById(id ?: -1)
                     }
                     recipe?.let { r ->
-                        DetailBottomBar(
+                        val priceCents = r.pricePerServing
+                        DishBottomBar(
                             navController = navController,
-                            userId = "123456", // 按你的实现替换
-                            recipeId = r.id,
-                            title = r.title,
-                            image = r.image
+                            //priceCents = priceCents,
+                            enabled = priceCents > 0,
+                            dishOnConfirm = {
+                                cartViewModel.addDish(
+                                    recipeId = r.id,
+                                    title = r.title,
+                                    priceCents = priceCents,      // lock unit price at add time
+                                    imageUrl = r.image
+                                )
+                                navController.navigate("cart")
+                            }
                         )
                     }
                 }
@@ -96,12 +107,12 @@ fun AppScaffold(
                         // 价格计算：跟随 ui 状态
                         val price = remember(ui) { computeSetPrice(set, ui.selections) }
 
-                        BottomPriceBar(
+                        SetBottomBar(
                             base = price.baseCents,
                             up = price.upchargeCents,
                             total = price.totalCents,
                             enabled = ui.isCompleted,
-                            onConfirm = {
+                            setOnConfirm = {
                                 cartViewModel.addSet(
                                     setId = set.id,
                                     setName = set.name,
@@ -115,6 +126,17 @@ fun AppScaffold(
                             }
                         )
                     }
+                }
+                "cart" -> {
+                    val ui by cartViewModel.uiState.collectAsState()
+                    CartBottomBar(
+                        total = ui.subtotalCents,
+                        enabled = ui.lines.isNotEmpty(),
+                        onSubmit = {
+                            // TODO: 提交订单或跳转订单页
+                             navController.navigate("checkout")
+                        }
+                    )
                 }
                 else -> {
                     BottomBar(navController)
@@ -138,9 +160,9 @@ fun AppScaffold(
                 composable(route = "settings") { SettingsScreen(modifier) }
 //                composable(route = "profile") { ProfileScreen(navController,modifier,userViewModel) }
                 composable(route = "cart") { CartScreen(navController,recipesViewModel,cartViewModel,modifier)}
-//                composable(route = "checkout") { CheckoutScreen(navController=navController,modifier=modifier,userViewModel = userViewModel) }
+                composable(route = "checkout") { CheckoutScreen(navController=navController,modifier=modifier,userViewModel = userViewModel) }
 //                composable(route = "orders") { OrderScreen(navController=navController,modifier=modifier,userViewModel = userViewModel) }
-////                composable(route = "all_orders") { AdminOrderScreen(modifier=modifier) }
+//                composable(route = "all_orders") { AdminOrderScreen(modifier=modifier) }
 //                composable(route = "favorites") { FavoriteScreen(navController,modifier,userViewModel,recipesViewModel) }
                 composable("recipes/{recipeId}") { backStackEntry ->
                     val recipeId = backStackEntry.arguments?.getString("recipeId")?.toInt() ?: 0
@@ -160,7 +182,6 @@ fun AppScaffold(
                         setId = id,
                         recipesViewModel = recipesViewModel,
                         setMenusViewModel = setMenusViewModel,
-                        onDone = {  } // 或跳到结算页
                     )
                 }
 

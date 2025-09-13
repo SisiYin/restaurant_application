@@ -54,7 +54,6 @@ fun SetMenusDetailScreen(
     setId: String,
     recipesViewModel: RecipesViewModel,
     setMenusViewModel: SetMenusViewModel,
-    onDone: () -> Unit
 ) {
     // 初始化套餐 + 拉取菜品兜底
     LaunchedEffect(setId) { setMenusViewModel.startSet(setId) }

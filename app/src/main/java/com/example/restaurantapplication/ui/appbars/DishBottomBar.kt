@@ -1,13 +1,10 @@
 package com.example.restaurantapplication.ui.appbars
 
-import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -19,20 +16,16 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.restaurantapplication.viewmodel.UserViewModel
+import com.example.restaurantapplication.ui.util.euro
+
 //
 //@Composable
 //fun DetailBottomBar(
@@ -124,13 +117,16 @@ import com.example.restaurantapplication.viewmodel.UserViewModel
 //}
 
 @Composable
-fun DetailBottomBar(
+fun DishBottomBar(
     navController: NavController,
-    userId: String?,
-    recipeId: Int,
-    title: String,
-    image: String,
-    userViewModel: UserViewModel = viewModel(),
+//    userId: String?,
+//    recipeId: Int,
+//    title: String,
+//    image: String,
+//    userViewModel: UserViewModel = viewModel(),
+    //priceCents: Int,
+    enabled: Boolean = true,
+    dishOnConfirm: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
@@ -154,40 +150,28 @@ fun DetailBottomBar(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            tabs.forEach { tab ->
-                val selected = tab.route == backStackEntry.value?.destination?.route
-                NavigationBarItem(
-                    selected = selected,
-                    onClick = { navController.navigate(tab.route) },
-                    label = { Text(tab.label) },
-                    icon  = { Icon(tab.icon, contentDescription = null) },
-                    alwaysShowLabel = true,
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor   = scheme.primary,
-                        selectedTextColor   = scheme.primary,
-                        unselectedIconColor = scheme.onSurfaceVariant,
-                        unselectedTextColor = scheme.onSurfaceVariant,
-                        indicatorColor      = scheme.secondaryContainer
+            // 左边导航
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                tabs.forEach { tab ->
+                    val selected = tab.route == navController.currentDestination?.route
+                    NavigationBarItem(
+                        selected = selected,
+                        onClick = { navController.navigate(tab.route) },
+                        label = { Text(tab.label) },
+                        icon = { Icon(tab.icon, contentDescription = null) },
+                        alwaysShowLabel = true
                     )
-                )
+                }
             }
         }
 
-        // 与 SetMenu 的 Confirm 按钮保持一致：主色填充 + 圆角
+        // 右边按钮
         Button(
-            onClick = {
-                if (userId != null) {
-                    userViewModel.addToCart(
-                        userId = userId,
-                        recipeId = recipeId.toString(),
-                        title = title,
-                        image = image
-                    )
-                } else {
-                    Toast.makeText(context, "Login Please", Toast.LENGTH_SHORT).show()
-                    navController.navigate("login") { popUpTo("login") { inclusive = true } }
-                }
-            },
+            onClick = dishOnConfirm,
+            enabled = enabled,
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = scheme.primary,
@@ -195,8 +179,9 @@ fun DetailBottomBar(
             ),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
             modifier = Modifier.height(40.dp)
+
         ) {
-            Text("Add to cart")
+            Text("Add to cart" )
         }
     }
 }

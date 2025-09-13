@@ -30,13 +30,23 @@ class CartViewModel : ViewModel() {
     }
 
     fun addDish(recipeId: Int, title: String, priceCents: Int, imageUrl: String?) {
-        val line = CartLine.DishLine(
-            recipeId = recipeId,
-            title = title,
-            priceCents = priceCents,
-            imageUrl = imageUrl
-        )
-        _ui.value = _ui.value.copy(lines = _ui.value.lines + line)
+        val current = _ui.value.lines
+        val existingIndex = current.indexOfFirst {
+            it is CartLine.DishLine && it.recipeId == recipeId && it.priceCents == priceCents
+        }
+        _ui.value = if (existingIndex >= 0) {
+            val updated = current.toMutableList()
+            val old = updated[existingIndex] as CartLine.DishLine
+            updated[existingIndex] = old.copy(qty = old.qty + 1)
+            _ui.value.copy(lines = updated)
+        } else {
+            _ui.value.copy(lines = current + CartLine.DishLine(
+                recipeId = recipeId,
+                title = title,
+                priceCents = priceCents,   // ✅ 当时价格
+                imageUrl = imageUrl
+            ))
+        }
     }
 
     fun changeQty(lineId: String, newQty: Int) {

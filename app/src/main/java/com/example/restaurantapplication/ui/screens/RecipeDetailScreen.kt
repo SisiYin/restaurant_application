@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.restaurantapplication.ui.appbars.DetailBottomBar
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.UserViewModel
 import org.jsoup.Jsoup
@@ -53,10 +52,18 @@ fun RecipeDetailScreen(
     modifier: Modifier = Modifier
 ) {
     val userId = "123456"
-    val recipeDetail = recipesViewModel.recipeDetail.value
-    if (recipeDetail != null) {
+    val recipe = remember(recipeId, recipesViewModel.allRecipes) {
+        recipesViewModel.getById(recipeId)
+    } ?: run {
+        // 简单的 loading / 占位
+        Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Loading…")
+        }
+        return
+    }
+
         //var isFavorite by remember { mutableStateOf(false) }
-        val cleanSummary = Jsoup.parse(recipeDetail.summary).text()
+        val cleanSummary = Jsoup.parse(recipe.summary).text()
         var isExpanded by remember { mutableStateOf(false) }
 
         Box(
@@ -71,8 +78,8 @@ fun RecipeDetailScreen(
             ){
                 item {
                     AsyncImage(
-                        model = recipeDetail.image,
-                        contentDescription = recipeDetail.title,
+                        model = recipe.image,
+                        contentDescription = recipe.title,
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(min = 180.dp, max = 280.dp) // 限制高度范围，但不固定死
@@ -83,7 +90,7 @@ fun RecipeDetailScreen(
                 }
 
                 item{
-                    recipeDetail.diets?.let { diets ->
+                    recipe.diets?.let { diets ->
 
                         FlowRow(
                             modifier = Modifier.fillMaxWidth(),
@@ -106,7 +113,7 @@ fun RecipeDetailScreen(
                 //title
                 item {
                     Text(
-                        text = recipeDetail.title,
+                        text = recipe.title,
                         style = MaterialTheme.typography.headlineSmall
                     )
                 }
@@ -144,7 +151,7 @@ fun RecipeDetailScreen(
 
                 item{
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = "Price per serving:${recipeDetail.pricePerServing} EUR")
+                    Text(text = "Price per serving:${recipe.pricePerServing} EUR")
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -169,7 +176,7 @@ fun RecipeDetailScreen(
 
                     // 显示配料列表
                     Text(text = "Ingredients:", fontWeight = FontWeight.Bold)
-                    (recipeDetail.extendedIngredients ?: emptyList()).forEach { ingredient ->
+                    (recipe.extendedIngredients ?: emptyList()).forEach { ingredient ->
                         Text(text = ingredient.name)
                     }
 
@@ -179,19 +186,8 @@ fun RecipeDetailScreen(
 
 
             }
-//            DetailBottomBar(
-//                navController = navController,
-//                userId = userId,
-//                recipeId = recipeId,
-//                title = recipeDetail?.title ?: "",
-//                image = recipeDetail?.image ?: "",
-//                userViewModel = userViewModel,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .align(Alignment.BottomCenter)
-//            )
         }
-    }
+
 }
 
 @Composable

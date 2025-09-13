@@ -1,6 +1,7 @@
 package com.example.restaurantapplication.data.model
 
 import java.util.UUID
+import kotlin.math.roundToInt
 
 //import com.google.firebase.Timestamp
 
@@ -10,20 +11,20 @@ data class RecipesResponse(
     val number: Int
 )
 
+//data class Recipe(
+//    var id: Int,
+//    var title: String,
+//    var diets: List<String>,
+//    var image: String,
+//    //var pricePerServing: Float,
+//    )
+
 data class Recipe(
-    var id: Int,
-    var title: String,
-    var diets: List<String>,
-    var image: String,
-
-    )
-
-data class RecipeDetail(
     var id: Int,
     var title: String,
     var image: String,
     var summary: String,
-    var pricePerServing: Float,
+    val pricePerServing: Int,   // ✅ 用 Double
     var diets: List<String>,
     var extendedIngredients: List<Ingredient>,
 )
@@ -42,9 +43,12 @@ data class FsDish(
     var extendedIngredients: List<String> = emptyList()
 )
 
-fun FsDish.toRecipe() = Recipe(id, title, diets, imageUrl)
-fun FsDish.toRecipeDetail() = RecipeDetail(
-    id, title, imageUrl, summary, pricePerServing.toFloat(),
+private fun Double.euroToCents(): Int = (this * 100).roundToInt()
+
+
+//fun FsDish.toRecipe() = Recipe(id, title, diets, imageUrl)
+fun FsDish.toRecipe() = Recipe(
+    id, title, imageUrl, summary, pricePerServing.euroToCents(),
     diets, extendedIngredients.map { Ingredient(it) }
 )
 

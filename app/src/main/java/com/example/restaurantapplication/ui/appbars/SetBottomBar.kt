@@ -1,11 +1,5 @@
 package com.example.restaurantapplication.ui.appbars
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -39,19 +34,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TextButton
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomPriceBar(
+fun SetBottomBar(
     base: Int,
     up: Int,
     total: Int,
     enabled: Boolean,
-    onConfirm: () -> Unit,
+    setOnConfirm: () -> Unit,
     modifier: Modifier = Modifier,
-    initiallyExpanded: Boolean = false
 ) {
     var showSheet by rememberSaveable { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -66,24 +59,44 @@ fun BottomPriceBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // 可点击展开明细的 Total 区域
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable { showSheet = true }
+//            Column(
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .clickable { showSheet = true }
+//            ) {
+//                Text("Total", style = MaterialTheme.typography.labelLarge)
+//                EuroText(total, style = MaterialTheme.typography.titleMedium)
+//            }
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.Start
             ) {
-                Text("Total", style = MaterialTheme.typography.labelLarge)
-                EuroText(total, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "Total",
+                    style = MaterialTheme.typography.labelLarge,
+                )
+                Spacer(Modifier.width(8.dp))
+
+                EuroText(
+                    total,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Spacer(Modifier.width(8.dp))
+
             }
 
             IconButton(onClick = { showSheet = true }) {
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowUp,
-                    contentDescription = "Show breakdown"
+                    contentDescription = "Show breakdown",
                 )
             }
 
-            Button(onClick = onConfirm, enabled = enabled) {
-                Text("Confirm • ${euro(total)}")
+            Button(
+                onClick = setOnConfirm,
+                enabled = enabled,
+            ) {
+                Text("Confirm")
             }
         }
     }

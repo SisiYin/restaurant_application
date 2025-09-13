@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import java.text.NumberFormat
 import java.util.Currency
@@ -22,7 +23,8 @@ fun euro(cents: Int): String {
 @Composable
 fun EuroText(
     cents: Int,
-    style: TextStyle = MaterialTheme.typography.bodyMedium
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    modifier: Modifier = Modifier
 ) {
     val fmt = remember {
         NumberFormat.getCurrencyInstance().apply {

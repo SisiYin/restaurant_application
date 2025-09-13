@@ -7,9 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.restaurantapplication.data.model.FsDish
 import com.example.restaurantapplication.data.model.Recipe
-import com.example.restaurantapplication.data.model.RecipeDetail
 import com.example.restaurantapplication.data.model.toRecipe
-import com.example.restaurantapplication.data.model.toRecipeDetail
 import kotlinx.coroutines.launch
 import com.google.firebase.ktx.Firebase          // 选这个（ktx 版）
 import com.google.firebase.firestore.ktx.firestore
@@ -21,7 +19,7 @@ class RecipesViewModel:  ViewModel()  {
         private set
 
 
-    var recipeDetail = mutableStateOf<RecipeDetail?>(null)
+    var recipe = mutableStateOf<Recipe?>(null)
         private set
 
 //    fun fetchAllRecipes() {
@@ -103,16 +101,25 @@ class RecipesViewModel:  ViewModel()  {
     }
 
     /** 读取详情（文档 ID 就是数字字符串，如 "101"） */
-    fun fetchRecipeDetail(recipeId: Int) {
-        viewModelScope.launch {
-            try {
-                val doc = dishesCol.document(recipeId.toString()).get().await()
-                val fs = doc.toObject(FsDish::class.java)
-                recipeDetail.value = fs?.toRecipeDetail()
-                Log.d("RecipesViewModel", "Loaded detail for $recipeId")
-            } catch (e: Exception) {
-                Log.e("RecipesViewModel", "Failed to load detail: ${e.message}", e)
-            }
-        }
-    }
+//    fun fetchRecipeDetail(recipeId: Int) {
+//        viewModelScope.launch {
+//            try {
+//                val doc = dishesCol.document(recipeId.toString()).get().await()
+//                val fs = doc.toObject(FsDish::class.java)
+//                recipeDetail.value = fs?.toRecipeDetail()
+//                Log.d("RecipesViewModel", "Loaded detail for $recipeId")
+//            } catch (e: Exception) {
+//                Log.e("RecipesViewModel", "Failed to load detail: ${e.message}", e)
+//            }
+//        }
+//    }
+
+    /** Convenience helpers */
+    fun getById(id: Int): Recipe? = allRecipes.firstOrNull { it.id == id }
+
+    fun filterByDiet(label: String): List<Recipe> =
+        allRecipes.filter { it.diets.any { d -> d.equals(label, ignoreCase = true) } }
+
+    //val salads: List<Recipe> get() = filterByDiet("Salad")
+    //val drinks: List<Recipe> get() = filterByDiet("Drink")
 }
