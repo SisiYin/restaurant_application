@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.example.restaurantapplication.data.model.Recipe
 
 @Composable
-fun FixedCategoryRow(
+fun RecipeFixedRow(
     title: String,
     recipes: List<Recipe>
 ) {

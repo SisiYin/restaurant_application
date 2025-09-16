@@ -51,6 +51,7 @@ fun RecipeFixedCard(
                         .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop
                 )
+
                 // Fixed label
                 Surface(
                     shape = RoundedCornerShape(999.dp),

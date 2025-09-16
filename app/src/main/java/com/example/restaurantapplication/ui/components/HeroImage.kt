@@ -27,9 +27,67 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+
+//
+//@Composable
+//fun HeroImage(
+//    url: String,
+//    title: String,
+//    isFavorite: Boolean,
+//    onToggleFavorite: () -> Unit,
+//    modifier: Modifier = Modifier,
+//) {
+//    Card( // ✅ 用 Card 管理圆角+阴影，避免 clip 吃掉按钮
+//        shape = RoundedCornerShape(16.dp),
+//        elevation = CardDefaults.cardElevation(2.dp),
+//        modifier = modifier
+//            .fillMaxWidth()
+//            .heightIn(min = 180.dp, max = 280.dp)
+//    ) {
+//        Box {
+//            AsyncImage(
+//                model = url,
+//                contentDescription = title,
+//                modifier = Modifier.fillMaxSize(),
+//                contentScale = ContentScale.Crop
+//            )
+//
+//            Box(
+//                Modifier
+//                    .matchParentSize()
+//                    .background(
+//                        Brush.verticalGradient(
+//                            0f to Color.Transparent,
+//                            0.7f to Color.Transparent,
+//                            1f to Color.Black.copy(alpha = 0.20f)
+//                        )
+//                    )
+//            )
+//
+//            IconButton(
+//                onClick = onToggleFavorite,
+//                modifier = Modifier
+//                    .align(Alignment.TopEnd)
+//                    .padding(top = 12.dp, end = 12.dp) // ✅ 往里缩，避免贴边
+//                    .size(40.dp)
+//                    .clip(CircleShape)
+//                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
+//            ) {
+//                Icon(
+//                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+//                    contentDescription = "Favorite",
+//                    tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface
+//                )
+//            }
+//        }
+//    }
+//}
 
 @Composable
 fun HeroImage(
@@ -37,51 +95,54 @@ fun HeroImage(
     title: String,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,   // ✅ 由调用方决定大小
+    cornerRadius: Dp = 16.dp,        // ✅ 圆角可调
+    showGradient: Boolean = true     // ✅ 控制是否显示渐变遮罩
 ) {
-    Box(
+    Card(
+        shape = RoundedCornerShape(cornerRadius),
+        elevation = CardDefaults.cardElevation(2.dp),
         modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = 180.dp, max = 280.dp)
-            .shadow(2.dp, RoundedCornerShape(16.dp), clip = true) // 阴影更明显一点
-            .clip(RoundedCornerShape(16.dp))
     ) {
-        AsyncImage(
-            model = url,
-            contentDescription = title,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-
-        // 下方轻微渐变，增强标题/控件可读性（如需放标题时更有用）
-        Box(
-            Modifier
-                .matchParentSize()
-                .background(
-                    Brush.verticalGradient(
-                        0f to Color.Transparent,
-                        0.7f to Color.Transparent,
-                        1f to Color.Black.copy(alpha = 0.20f)
-                    )
-                )
-        )
-
-        // 顶部工具行：收藏（可选）
-        IconButton(
-            onClick = onToggleFavorite,
-            modifier = Modifier
-                .size(36.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
-                .align(Alignment.TopEnd) // 与顶部对齐
-
-        ) {
-            Icon(
-                imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                contentDescription = "Favorite",
-                tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface
+        Box {
+            AsyncImage(
+                model = url,
+                contentDescription = title,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
+
+            if (showGradient) {
+                Box(
+                    Modifier
+                        .matchParentSize()
+                        .background(
+                            Brush.verticalGradient(
+                                0f to Color.Transparent,
+                                0.7f to Color.Transparent,
+                                1f to Color.Black.copy(alpha = 0.20f)
+                            )
+                        )
+                )
+            }
+
+            IconButton(
+                onClick = onToggleFavorite,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 12.dp, end = 12.dp)
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
+            ) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    contentDescription = "Favorite",
+                    tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
 }
+
 

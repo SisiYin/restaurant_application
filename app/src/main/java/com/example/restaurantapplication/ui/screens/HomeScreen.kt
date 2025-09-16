@@ -24,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.restaurantapplication.ui.components.FilterChip
 import com.example.restaurantapplication.ui.components.RecipeSection
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import androidx.compose.foundation.lazy.LazyColumn

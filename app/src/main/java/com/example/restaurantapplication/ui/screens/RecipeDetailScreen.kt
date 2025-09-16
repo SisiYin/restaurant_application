@@ -80,13 +80,19 @@ fun RecipeDetailScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ){
                 item {
-//                    HeroImage(url = recipe.image, title = recipe.title, onFav = { /* TODO: toggle favorite */ })
                     HeroImage(
                         url = recipe.image,
                         title = recipe.title,
                         isFavorite = isFavorite,
-                        onToggleFavorite = { isFavorite = !isFavorite }, // TODO: 同步到 VM/Firestore
+                        onToggleFavorite = {
+                            isFavorite = !isFavorite
+                            userViewModel.toggleFavorite(recipe.id)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 180.dp, max = 280.dp) // ✅ 大图
                     )
+
                 }
 
                 item {
@@ -178,10 +184,4 @@ fun RecipeDetailScreen(
             }
         }
 
-}
-
-@Composable
-fun getDietColor(diet: String): Color {
-    val hue = (diet.hashCode() % 360).toFloat().let { if (it < 0) it + 360 else it } // 确保 hue 在 0~360
-    return Color.hsl(hue, 0.4f, 0.65f)
 }

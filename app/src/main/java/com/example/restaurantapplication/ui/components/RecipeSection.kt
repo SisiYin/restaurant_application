@@ -29,13 +29,13 @@ fun RecipeSection (
             style = MaterialTheme.typography.headlineSmall
         )
         Spacer(modifier = Modifier.height(8.dp))
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(recipes) { recipe ->
-                RecipeItem(recipe, navController, recipesViewModel)
-            }
-        }
+//        LazyRow(
+//            horizontalArrangement = Arrangement.spacedBy(16.dp)
+//        ) {
+//            items(recipes) { recipe ->
+//                RecipeItem(recipe, navController, recipesViewModel,userViewModel)
+//            }
+//        }
         Spacer(modifier = Modifier.height(16.dp))
     }
 }

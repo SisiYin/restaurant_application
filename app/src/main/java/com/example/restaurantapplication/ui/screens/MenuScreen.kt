@@ -24,6 +24,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,12 +37,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.restaurantapplication.ui.components.FilterChip
-import com.example.restaurantapplication.ui.components.RecipeItem
-import com.example.restaurantapplication.ui.components.RecipeList
+import com.example.restaurantapplication.ui.components.DishMenuCard
 import com.example.restaurantapplication.ui.components.SetMenuCard
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.SetMenusViewModel
+import com.example.restaurantapplication.viewmodel.UserViewModel
 
 
 @Composable
@@ -48,28 +49,35 @@ fun MenuScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     recipesViewModel: RecipesViewModel,
-    //userViewModel: UserViewModel
+    userViewModel: UserViewModel,
     setMenusViewModel: SetMenusViewModel = viewModel()
 ) {
-    val categories = listOf("Salad","Main Dish", "Sushi", "Dessert","Drink", "Set Menus")
+    val categories = listOf("Salad","Main Dish", "Sushi", "Dessert","Drink","Set Menus", "Seafood","Vegan","Pork","Beef","Chicken")
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var searchWord by remember { mutableStateOf("") }
+    val favorites by userViewModel.favorites.collectAsState()   // ✅ 收藏列表
 
     // Fetch recipes
     LaunchedEffect(Unit) {
         recipesViewModel.fetchAllRecipes()
     }
 
-    LaunchedEffect(selectedCategory) {
-        if (selectedCategory != null) {
-            recipesViewModel.fetchRecipesByDiet(selectedCategory)
+    val recipes = recipesViewModel.allRecipes
+    val filteredRecipes by remember(searchWord, selectedCategory) {
+        derivedStateOf {
+            val normCat = selectedCategory?.trim()?.lowercase()
+            recipes
+                .filter { it.title.contains(searchWord, ignoreCase = true) }
+                .filter { r ->
+                    when {
+                        normCat == null -> true
+                        normCat == "set menus" -> false
+                        else -> r.diets.any { it.trim().lowercase() == normCat }
+                    }
+                }
         }
     }
 
-
-    val filteredRecipes = recipesViewModel.allRecipes.filter {
-        it.title.contains(searchWord, ignoreCase = true)
-    }
     Log.d("RecipeScreen", "Rendering RecipeScreen")
     // Layout
     Column(modifier = modifier.padding(16.dp)) {
@@ -77,7 +85,7 @@ fun MenuScreen(
         OutlinedTextField(
             value = searchWord,
             onValueChange = { searchWord = it },
-            placeholder = { Text("Search Recipe") },
+            placeholder = { Text("Search Dish") },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -86,7 +94,7 @@ fun MenuScreen(
 
         Row(modifier = Modifier.fillMaxSize()) {
             // 左侧分类列表
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .width(90.dp)
                     .fillMaxHeight()
@@ -94,24 +102,27 @@ fun MenuScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.Start
             ) {
-                categories.forEach { category ->
-                    Text(
-                        text = category,
-                        modifier = Modifier
-                            .clickable { selectedCategory = category }
-                            .padding(vertical = 8.dp),
-                        style = if (category == selectedCategory) {
-                            MaterialTheme.typography.bodyLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF6200EE)
-                            )
-                        } else {
-                            MaterialTheme.typography.bodyLarge.copy(
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    )
+                item{
+                    categories.forEach { category ->
+                        Text(
+                            text = category,
+                            modifier = Modifier
+                                .clickable { selectedCategory = category }
+                                .padding(vertical = 8.dp),
+                            style = if (category == selectedCategory) {
+                                MaterialTheme.typography.bodyLarge.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF6200EE)
+                                )
+                            } else {
+                                MaterialTheme.typography.bodyLarge.copy(
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        )
+                    }
                 }
+
             }
 
 
@@ -137,12 +148,17 @@ fun MenuScreen(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(1f)
-                        .padding(16.dp),
+                        .weight(1f),
+//                        .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
                     items(filteredRecipes) { recipe ->
-                        RecipeItem(recipe = recipe, navController = navController, recipesViewModel = recipesViewModel)
+                        DishMenuCard(recipe = recipe, navController = navController, recipesViewModel = recipesViewModel, userViewModel = userViewModel,isFavorite = favorites.contains(recipe.id),
+                            onToggleFavorite = { userViewModel.toggleFavorite(recipe.id) },
+                            onClick = {
+                                recipesViewModel.getById(recipe.id)
+                                navController.navigate("recipes/${recipe.id}")
+                            })
                     }
                 }
             }

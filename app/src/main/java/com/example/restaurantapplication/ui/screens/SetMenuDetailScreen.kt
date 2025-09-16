@@ -40,12 +40,14 @@ import androidx.compose.ui.graphics.Color
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
 import com.example.restaurantapplication.domain.pricing.upchargeOf
-import com.example.restaurantapplication.ui.components.FixedCategoryRow
+import com.example.restaurantapplication.ui.components.HeroImage
+import com.example.restaurantapplication.ui.components.RecipeFixedRow
 import com.example.restaurantapplication.ui.components.RecipePickCard
 import com.example.restaurantapplication.ui.util.EuroText
 import com.example.restaurantapplication.ui.util.euro
 import com.example.restaurantapplication.ui.util.inCategory
 import com.example.restaurantapplication.ui.util.label
+import com.example.restaurantapplication.viewmodel.UserViewModel
 
 @Composable
 fun SetMenusDetailScreen(
@@ -54,6 +56,7 @@ fun SetMenusDetailScreen(
     setId: String,
     recipesViewModel: RecipesViewModel,
     setMenusViewModel: SetMenusViewModel,
+    userViewModel: UserViewModel
 ) {
     // 初始化套餐 + 拉取菜品兜底
     LaunchedEffect(setId) { setMenusViewModel.startSet(setId) }
@@ -61,6 +64,8 @@ fun SetMenusDetailScreen(
         if (recipesViewModel.allRecipes.isEmpty()) recipesViewModel.fetchAllRecipes()
     }
     val allRecipes = recipesViewModel.allRecipes
+
+    var isFavorite by remember { mutableStateOf(false) }
 
     val salads by remember(allRecipes) {
         derivedStateOf { allRecipes.filter { it.diets.any { d -> d.equals("Salad", true) } } }
@@ -89,15 +94,28 @@ fun SetMenusDetailScreen(
     ) {
         // 头部：标题 + summary + 简洁进度
         item {
-            AsyncImage(
-                model = set.imageUrl,
-                contentDescription = set.name,
+//            AsyncImage(
+//                model = set.imageUrl,
+//                contentDescription = set.name,
+//                modifier = Modifier
+//                    .padding(16.dp)
+//                    .fillMaxWidth()
+//                    .heightIn(min = 180.dp, max = 280.dp) // 限制高度范围，但不固定死
+//                    .clip(RoundedCornerShape(16.dp)),
+//                contentScale = ContentScale.Crop
+//            )
+            HeroImage(
+                url = set.imageUrl,
+                title = set.name,
+                isFavorite = isFavorite,
+                onToggleFavorite = {
+                    isFavorite = !isFavorite
+                    //userViewModel.toggleFavorite(set.id)
+                },
                 modifier = Modifier
-                    .padding(16.dp)
                     .fillMaxWidth()
-                    .heightIn(min = 180.dp, max = 280.dp) // 限制高度范围，但不固定死
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop
+                    .padding(16.dp)
+                    .heightIn(min = 180.dp, max = 280.dp) // ✅ 大图
             )
         }
 
@@ -161,7 +179,7 @@ fun SetMenusDetailScreen(
 
         // —— 固定项：Salad ——（标题=Salad，下面横向所有 Salad 卡片）
         item {
-            FixedCategoryRow(
+            RecipeFixedRow(
                 title = "Salad",
                 recipes = salads
             )
@@ -170,7 +188,7 @@ fun SetMenusDetailScreen(
         }
         // —— 固定项：Drink ——（标题=Drink，下面横向所有 Drink 卡片）
         item {
-            FixedCategoryRow(
+            RecipeFixedRow(
                 title = "Drink",
                 recipes = drinks
             )

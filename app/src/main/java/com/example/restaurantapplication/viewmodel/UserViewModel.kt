@@ -3,8 +3,21 @@ package com.example.restaurantapplication.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class UserViewModel:  ViewModel()  {
+
+    //Favorites
+    private val _favorites = MutableStateFlow<Set<Int>>(emptySet())
+    val favorites: StateFlow<Set<Int>> = _favorites
+
+    fun toggleFavorite(id: Int) {
+        _favorites.value = _favorites.value.toMutableSet().apply {
+            if (contains(id)) remove(id) else add(id)
+        }
+        // TODO: 同步到 Firestore（可选）
+    }
 
     fun logout() {
 //        auth.signOut()

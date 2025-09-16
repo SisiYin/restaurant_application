@@ -1,6 +1,5 @@
 package com.example.restaurantapplication.ui.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,15 +20,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.restaurantapplication.data.model.CartLine
@@ -37,14 +32,16 @@ import com.example.restaurantapplication.ui.util.euro
 import com.example.restaurantapplication.viewmodel.CartViewModel
 
 @Composable
-fun SetLineCard(
-    line: CartLine.SetMenuLine,
+fun DishLineCard(
+    line: CartLine.DishLine,
     cartViewModel: CartViewModel,
     titleOf: (Int) -> String?
+
 ) {
     //勾选状态
     val ui by cartViewModel.uiState.collectAsState()
     val checked = ui.selectedIds.contains(line.id)
+
     Card {
         Row(
             Modifier
@@ -59,22 +56,21 @@ fun SetLineCard(
                     .padding(start = 0.dp)
             )
             Spacer(Modifier.width(8.dp))
-            // 左侧图片
+
             AsyncImage(
                 model = line.imageUrl,
                 contentDescription = line.title,
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Crop,          // ✅ 裁剪填满容器
                 modifier = Modifier
-                    .size(80.dp)
-                    .clip(MaterialTheme.shapes.medium)
+                    .size(80.dp)                           // ✅ 固定大小（统一宽高）
+                    .clip(MaterialTheme.shapes.medium)     // 圆角
             )
 
             Spacer(Modifier.width(12.dp))
-
-            // 右侧信息区（三行布局）
+            // 右侧信息区（两行布局）
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.Top,
             ) {
                 // 第一行：标题 + 删除
                 Row(
@@ -86,6 +82,7 @@ fun SetLineCard(
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         modifier = Modifier.weight(1f)
                     )
+
                     IconButton(
                         onClick = { cartViewModel.remove(line.id) },
                         modifier = Modifier.size(32.dp)
@@ -93,44 +90,17 @@ fun SetLineCard(
                         Icon(
                             imageVector = Icons.Filled.Delete,
                             contentDescription = "Remove",
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }
+                Spacer(Modifier.height(16.dp))
 
-                // 第二行：summary + >>/<<
-                var expanded by remember { mutableStateOf(false) }
-                val summary = remember(line) { selectionSummary(line, titleOf) }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = summary,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = if (expanded) Int.MAX_VALUE else 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
-                    )
-                    if (summary.isNotBlank()) {
-                        Text(
-                            text = if (expanded) "<<" else ">>",
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                color = MaterialTheme.colorScheme.primary
-                            ),
-                            modifier = Modifier
-                                .padding(start = 4.dp)
-                                .clickable { expanded = !expanded }
-                        )
-                    }
-                }
-
-                Spacer(Modifier.height(4.dp))
-
-                // 第三行：单价 + 数量按钮
+                // 第二行：单价 + 数量按钮
                 Row(
                     Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
-                ) {
+                ){
                     Text(
                         text = euro(line.priceCents),
                         style = MaterialTheme.typography.bodyMedium,
@@ -146,15 +116,4 @@ fun SetLineCard(
             }
         }
     }
-}
-
-
-/** 把 selections 转为菜名（英文）列表，用 · 连接；保持非 @Composable */
-private fun selectionSummary(
-    line: CartLine.SetMenuLine,
-    titleOf: (Int) -> String?
-): String {
-    val ids: List<Int> = line.selections.values.flatten()
-    val names = ids.mapNotNull(titleOf)
-    return names.joinToString(" · ")
 }

@@ -161,7 +161,7 @@ fun AppScaffold(
                 startDestination = "home"
             ) {
                 composable(route = "home") { HomeScreen(navController, modifier, recipesViewModel) }
-                composable(route = "menu") { MenuScreen(navController, modifier, recipesViewModel) }
+                composable(route = "menu") { MenuScreen(navController, modifier, recipesViewModel,userViewModel) }
 
 //                composable(route = "login") { LoginScreen(navController=navController,modifier=modifier,userViewModel=userViewModel) }
                 composable(route = "info") { InfoScreen(modifier) }
@@ -190,6 +190,8 @@ fun AppScaffold(
                         setId = id,
                         recipesViewModel = recipesViewModel,
                         setMenusViewModel = setMenusViewModel,
+                        userViewModel = userViewModel
+
                     )
                 }
 
