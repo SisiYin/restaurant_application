@@ -1,8 +1,10 @@
 package com.example.restaurantapplication.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,22 +42,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.restaurantapplication.ui.components.CommentsSection
 import com.example.restaurantapplication.ui.components.DietRow
+import com.example.restaurantapplication.ui.components.ExpandableText
 import com.example.restaurantapplication.ui.components.HeroImage
+import com.example.restaurantapplication.ui.components.SectionTitle
 import com.example.restaurantapplication.ui.util.euro
+import com.example.restaurantapplication.viewmodel.CommentsViewModel
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.UserViewModel
 import org.jsoup.Jsoup
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun RecipeDetailScreen(
     recipeId: Int,
     navController: NavController,
     recipesViewModel: RecipesViewModel,
     userViewModel: UserViewModel,
+    commentsViewModel: CommentsViewModel,
     modifier: Modifier = Modifier
 ) {
-    val userId = "123456"
     val recipe = remember(recipeId, recipesViewModel.allRecipes) {
         recipesViewModel.getById(recipeId)
     } ?: run {
@@ -65,9 +73,13 @@ fun RecipeDetailScreen(
         return
     }
 
-        var isFavorite by remember { mutableStateOf(false) }
-        val cleanSummary = Jsoup.parse(recipe.summary).text()
-        var isExpanded by remember { mutableStateOf(false) }
+    val isFavorite by userViewModel.isFavorite(recipe.id).collectAsState(initial = false)
+    val ratingStat by commentsViewModel
+        .ratingStat(recipe.id.toString())
+        .collectAsState()
+
+    val cleanSummary = Jsoup.parse(recipe.summary).text()
+    var isExpanded by remember { mutableStateOf(false) }
 
         Box(
             modifier = modifier
@@ -85,7 +97,6 @@ fun RecipeDetailScreen(
                         title = recipe.title,
                         isFavorite = isFavorite,
                         onToggleFavorite = {
-                            isFavorite = !isFavorite
                             userViewModel.toggleFavorite(recipe.id)
                         },
                         modifier = Modifier
@@ -114,7 +125,7 @@ fun RecipeDetailScreen(
                     )
                 }
 
-                //rating and favorite
+                //rating
                 item {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -133,51 +144,51 @@ fun RecipeDetailScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                //text = if (avgRating == -1.0) "No Rating Yet" else "$avgRating",
-                                text = "Vote",
-                                style = MaterialTheme.typography.bodyMedium.copy(
-                                    fontSize = 24.sp
-                                )
+                                text = ratingStat?.let { String.format("%.1f", it) } ?: "No rating yet",
+                                style = MaterialTheme.typography.titleMedium
                             )
+                            val count by commentsViewModel.commentsOf(recipe.id.toString())
+                                .collectAsState(initial = emptyList())
+                            if (count.isNotEmpty()) {
+                                Spacer(Modifier.width(6.dp))
+                                Text(
+                                    "(${count.size})",
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
                         }
-
-                        //favorite button
                     }
                 }
 
-                item{
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = "Price per serving:${euro(recipe.pricePerServing)} EUR")
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
+                // Summary
+                item {
+                    SectionTitle("About this dish")
+                    ExpandableText(
                         text = cleanSummary,
-                        maxLines = if (isExpanded) Int.MAX_VALUE else 6, // 如果展开则显示完整内容
-                        overflow = TextOverflow.Ellipsis // 省略超出的部分
+                        expanded = isExpanded,
+                        onToggle = { isExpanded = !isExpanded },
+                        collapsedMaxLines = 4
                     )
                 }
 
-                item{
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        TextButton(onClick = { isExpanded = !isExpanded }) {
-                            Text(text = if (isExpanded) "Less <<" else "More >>")
+                // Ingredients
+                item {
+                    SectionTitle("Ingredients")
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        (recipe.extendedIngredients ?: emptyList()).forEach { ing ->
+                            Text("• ${ing.name}", style = MaterialTheme.typography.bodyMedium)
                         }
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // 显示配料列表
-                    Text(text = "Ingredients:", fontWeight = FontWeight.Bold)
-                    (recipe.extendedIngredients ?: emptyList()).forEach { ingredient ->
-                        Text(text = ingredient.name)
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
+                item {
+                    SectionTitle("Reviews")
+                    CommentsSection(
+                        dishId = recipe.id.toString(),
+                        commentsViewModel = commentsViewModel,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
 
 
@@ -185,3 +196,5 @@ fun RecipeDetailScreen(
         }
 
 }
+
+

@@ -41,6 +41,7 @@ com-google-firebase-firebase-firestore-ktx2 = { module = "com.google.firebase:fi
 com-google-firebase-firebase-firestore-ktx3 = { module = "com.google.firebase:firebase-firestore-ktx" }
 com-google-firebase-firebase-firestore-ktx4 = { module = "com.google.firebase:firebase-firestore-ktx" }
 com-google-firebase-firebase-firestore-ktx5 = { module = "com.google.firebase:firebase-firestore-ktx" }
+firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-bom-v3330 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }

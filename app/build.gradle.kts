@@ -65,6 +65,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-common-ktx")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    //firebase auth
+    implementation (libs.firebase.auth.ktx)
 
     implementation(libs.coil.compose.v260)
     // icon

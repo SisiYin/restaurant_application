@@ -74,7 +74,7 @@ fun InfoScreen(
 }
 
 @Composable
-fun SectionTitle(text: String) {
+private fun SectionTitle(text: String) {
     Text(
         text = text,
         fontSize = 20.sp,

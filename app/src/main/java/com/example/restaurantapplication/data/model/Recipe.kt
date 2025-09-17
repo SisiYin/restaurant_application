@@ -143,15 +143,25 @@ data class User(
 )
 
 
-//data class Comment(
-//    val userId: String = "",
-//    val userName: String = "",
-//    val rating: Double = 0.0,
-//    val content: String = "",
-//    val timestamp: Timestamp = Timestamp.now(),
-//    val likes: Long = 0,
-//
-//    )
+data class Comment(
+    val id: String = "",
+    val dishId: String = "",
+    val uid: String? = null,
+    val nickname: String? = null,
+    val text: String = "",
+    val rating: Int? = null,                  // 1..5，可空
+    val createdAt: com.google.firebase.Timestamp? = null,
+    val updatedAt: com.google.firebase.Timestamp? = null
+)
+
+data class UserCommentRef(
+    val id: String = "",
+    val dishId: String = "",
+    val rating: Int? = null,
+    val textPreview: String? = null,
+    val createdAt: com.google.firebase.Timestamp? = null
+)
+
 
 
 

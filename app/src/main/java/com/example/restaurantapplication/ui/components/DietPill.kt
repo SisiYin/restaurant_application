@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 
 @Composable
@@ -43,11 +44,17 @@ fun DietPill(diet: String) {
             .padding(horizontal = 10.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = style.icon,
-            contentDescription = diet,
+//        Icon(
+//            imageVector = style.icon,
+//            contentDescription = diet,
+//            modifier = Modifier.size(16.dp),
+//            tint = style.fg
+//        )
+        Text(
+            text = style.emoji,   // ✅ 用 Text 显示 emoji
+            fontSize = 14.sp,
             modifier = Modifier.size(16.dp),
-            tint = style.fg
+            color = style.fg
         )
         Spacer(Modifier.width(6.dp))
         Text(
@@ -59,7 +66,8 @@ fun DietPill(diet: String) {
 }
 
 private data class DietStyle(
-    val icon: ImageVector,
+    //val icon: ImageVector,
+    val emoji: String,   // ✅ 从 ImageVector 换成 String
     val bg: Color,
     val fg: Color,
     val stroke: Color = bg.copy(alpha = 0.6f)
@@ -98,7 +106,10 @@ private val dietColorMap = mapOf(
     "dessert"  to Color(0xFFF8BBD0),  // 粉色
     "drink"    to Color(0xFFD1C4E9),  // 紫色
     "vegan"    to Color(0xFFDCEDC8),  // 浅绿
-    "seafood"  to Color(0xFFB2EBF2)   // 青色
+    "seafood"  to Color(0xFFB2EBF2),   // 青色
+    "beef"     to Color(0xFFFFCDD2),  // 浅红
+    "pork"     to Color(0xFFFFF9C4),  // 浅黄
+    "chicken"  to Color(0xFFE1BEE7)   // 浅紫
 )
 
 private fun dietStyle(dietRaw: String, scheme: ColorScheme): DietStyle {
@@ -108,15 +119,26 @@ private fun dietStyle(dietRaw: String, scheme: ColorScheme): DietStyle {
     val fixedColor = dietColorMap[diet]
     if (fixedColor != null) {
         return DietStyle(
-            icon = when (diet) {
-                "maindish", "main dish" -> Icons.Filled.DinnerDining
-                "salad"   -> Icons.Filled.Grass
-                "sushi"   -> Icons.Filled.RiceBowl
-                "dessert" -> Icons.Filled.Cake
-                "drink"   -> Icons.Filled.LocalCafe
-                "vegan"   -> Icons.Filled.Spa
-                "seafood" -> Icons.Filled.SetMeal
-                else -> Icons.Filled.Label
+            emoji = when (diet) {
+//                "maindish", "main dish" -> Icons.Filled.DinnerDining
+//                "salad"   -> Icons.Filled.Grass
+//                "sushi"   -> Icons.Filled.RiceBowl
+//                "dessert" -> Icons.Filled.Cake
+//                "drink"   -> Icons.Filled.LocalCafe
+//                "vegan"   -> Icons.Filled.Spa
+//                "seafood" -> Icons.Filled.SetMeal
+//                else -> Icons.Filled.
+                "main dish" -> "🍽️"
+                "salad"     -> "🥗"
+                "sushi"     -> "🍣"
+                "dessert"   -> "🍰"
+                "drink"     -> "🍹"
+                "vegan"     -> "🥦"
+                "seafood"   -> "🐟"
+                "beef"      -> "🐂"
+                "pork"      -> "🐖"
+                "chicken"   -> "🐓"
+                else        -> "🏷️"
             },
             bg = fixedColor,
             fg = Color.Black,
@@ -133,6 +155,6 @@ private fun dietStyle(dietRaw: String, scheme: ColorScheme): DietStyle {
     val stroke = Color.hsl(hue, sat, (light - 0.15f).coerceAtLeast(0.3f))
     val fg = Color.hsl(hue, sat * 0.7f, (light - 0.35f).coerceAtLeast(0.2f))
 
-    return DietStyle(Icons.Filled.Label, bg, fg, stroke)
+    return DietStyle("🏷️", bg, fg, stroke)
 }
 

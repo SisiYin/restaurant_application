@@ -1,23 +1,27 @@
-package com.example.restaurantapplication.ui
+package com.example.restaurantapplication
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import com.example.restaurantapplication.data.repository.FavoritesRepository
+import com.example.restaurantapplication.ui.AppScaffold
 import com.example.restaurantapplication.viewmodel.CartViewModel
+import com.example.restaurantapplication.viewmodel.CommentsViewModel
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.UserViewModel
 
 class MainActivity : ComponentActivity() {
     val userViewModel: UserViewModel by viewModels()
-
+    val commentsViewModel: CommentsViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val recipesViewModel: RecipesViewModel by viewModels()
         val cartViewModel: CartViewModel by viewModels()
 
         setContent {
-            AppScaffold(userViewModel, recipesViewModel, cartViewModel)
+            AppScaffold(userViewModel, recipesViewModel, cartViewModel,commentsViewModel)
         }
     }
 //    private val credentialManager by lazy { CredentialManager.create(this) }

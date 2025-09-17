@@ -55,7 +55,8 @@ fun MenuScreen(
     val categories = listOf("Salad","Main Dish", "Sushi", "Dessert","Drink","Set Menus", "Seafood","Vegan","Pork","Beef","Chicken")
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var searchWord by remember { mutableStateOf("") }
-    val favorites by userViewModel.favorites.collectAsState()   // ✅ 收藏列表
+    val favoriteIds by userViewModel.favoriteIds.collectAsState()
+
 
     // Fetch recipes
     LaunchedEffect(Unit) {
@@ -153,7 +154,7 @@ fun MenuScreen(
                     verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
                     items(filteredRecipes) { recipe ->
-                        DishMenuCard(recipe = recipe, navController = navController, recipesViewModel = recipesViewModel, userViewModel = userViewModel,isFavorite = favorites.contains(recipe.id),
+                        DishMenuCard(recipe = recipe, navController = navController, recipesViewModel = recipesViewModel, userViewModel = userViewModel,isFavorite = recipe.id in favoriteIds,
                             onToggleFavorite = { userViewModel.toggleFavorite(recipe.id) },
                             onClick = {
                                 recipesViewModel.getById(recipe.id)

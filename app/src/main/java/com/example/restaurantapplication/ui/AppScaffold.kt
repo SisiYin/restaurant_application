@@ -32,6 +32,7 @@ import com.example.restaurantapplication.ui.screens.RecipeDetailScreen
 import com.example.restaurantapplication.ui.screens.SetMenusDetailScreen
 import com.example.restaurantapplication.ui.screens.SettingsScreen
 import com.example.restaurantapplication.viewmodel.CartViewModel
+import com.example.restaurantapplication.viewmodel.CommentsViewModel
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.UserViewModel
 import com.example.restaurantapplication.viewmodel.SetMenusViewModel
@@ -42,7 +43,8 @@ fun AppScaffold(
     userViewModel: UserViewModel,
     recipesViewModel: RecipesViewModel,
     cartViewModel: CartViewModel,
-) {
+    commentsViewModel: CommentsViewModel,
+    ) {
     val navController = rememberNavController() // create NavController
     val backStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry.value?.destination?.route
@@ -179,7 +181,8 @@ fun AppScaffold(
                         modifier = modifier,
                         recipeId = recipeId,
                         recipesViewModel = recipesViewModel,
-                        userViewModel = userViewModel
+                        userViewModel = userViewModel,
+                        commentsViewModel = commentsViewModel,
                     )
                 }
                 composable("setMenus/{id}"){ backStack ->

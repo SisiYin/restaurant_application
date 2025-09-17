@@ -3,20 +3,38 @@ package com.example.restaurantapplication.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import androidx.lifecycle.viewModelScope
+import com.example.restaurantapplication.data.repository.FavoritesRepository
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
+
 
 class UserViewModel:  ViewModel()  {
 
     //Favorites
-    private val _favorites = MutableStateFlow<Set<Int>>(emptySet())
-    val favorites: StateFlow<Set<Int>> = _favorites
+    private val repoFav = FavoritesRepository()
 
-    fun toggleFavorite(id: Int) {
-        _favorites.value = _favorites.value.toMutableSet().apply {
-            if (contains(id)) remove(id) else add(id)
+    // 订阅全部收藏的 id 集合
+    val favoriteIds: StateFlow<Set<Int>> =
+        repoFav.observeAllFavorites()   // 需要在 repo 里加这个方法
+            .stateIn(viewModelScope, SharingStarted.Eagerly, emptySet())
+
+    // 派生：判断某个 recipeId 是否收藏
+    fun isFavorite(recipeId: Int): StateFlow<Boolean> =
+        favoriteIds
+            .map { ids -> recipeId in ids }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    // 切换收藏
+    fun toggleFavorite(recipeId: Int) = viewModelScope.launch {
+        try {
+            repoFav.toggle(recipeId)
+        } catch (_: Exception) {
+            // TODO: 提示失败
         }
-        // TODO: 同步到 Firestore（可选）
     }
 
     fun logout() {
