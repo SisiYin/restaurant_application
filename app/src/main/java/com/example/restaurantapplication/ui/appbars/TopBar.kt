@@ -1,6 +1,10 @@
 package com.example.restaurantapplication.ui.appbars
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
@@ -17,9 +21,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.restaurantapplication.R
 import com.example.restaurantapplication.viewmodel.UserViewModel
 
 
@@ -40,7 +50,18 @@ fun TopBar(
 
 
     TopAppBar(
-        title = { Text("LOGO") },
+        title = {
+            //Text("LOGO")
+            Image(
+                painter = painterResource(id = R.drawable.logo), // 把你的 logo 放到 res/drawable/logo.png
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .height(32.dp)           // 28~32dp 比较合适
+                    .clip(RoundedCornerShape(4.dp)),
+//                    .clickable { navController.navigate("home") }, // 可选：点 logo 回首页
+                contentScale = ContentScale.Fit
+            )
+        },
         actions = {
             IconButton(onClick = { expanded = !expanded }) {
                 Icon(Icons.Filled.MoreVert, contentDescription = "More Options")

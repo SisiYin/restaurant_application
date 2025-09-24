@@ -91,7 +91,7 @@ fun MenuScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Row(modifier = Modifier.fillMaxSize()) {
             // 左侧分类列表

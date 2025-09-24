@@ -5,7 +5,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -28,6 +27,7 @@ import com.example.restaurantapplication.ui.screens.FavoriteScreen
 import com.example.restaurantapplication.ui.screens.HomeScreen
 import com.example.restaurantapplication.ui.screens.InfoScreen
 import com.example.restaurantapplication.ui.screens.MenuScreen
+import com.example.restaurantapplication.ui.screens.SetMenuScreen
 import com.example.restaurantapplication.ui.screens.RecipeDetailScreen
 import com.example.restaurantapplication.ui.screens.SetMenusDetailScreen
 import com.example.restaurantapplication.ui.screens.SettingsScreen
@@ -36,7 +36,6 @@ import com.example.restaurantapplication.viewmodel.CommentsViewModel
 import com.example.restaurantapplication.viewmodel.RecipesViewModel
 import com.example.restaurantapplication.viewmodel.UserViewModel
 import com.example.restaurantapplication.viewmodel.SetMenusViewModel
-import kotlin.math.roundToInt
 
 @Composable
 fun AppScaffold(
@@ -63,6 +62,7 @@ fun AppScaffold(
             when (currentRoute) {
                 "home" -> TopBar(navController)
                 "menu" -> ScreenTopBar("Menu",navController)
+                "setmenu" -> ScreenTopBar("SetMenu",navController)
                 "favorites" -> ScreenTopBar("Favorites",navController)
 //                "profile" -> ScreenTopBar("Profile",navController)
                 "settings" -> ScreenTopBar("Settings",navController)
@@ -164,6 +164,7 @@ fun AppScaffold(
             ) {
                 composable(route = "home") { HomeScreen(navController, modifier, recipesViewModel) }
                 composable(route = "menu") { MenuScreen(navController, modifier, recipesViewModel,userViewModel) }
+                composable(route = "setmenu") { SetMenuScreen(navController, modifier, setMenusViewModel) }
 
 //                composable(route = "login") { LoginScreen(navController=navController,modifier=modifier,userViewModel=userViewModel) }
                 composable(route = "info") { InfoScreen(modifier) }
